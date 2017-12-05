@@ -1,0 +1,24 @@
+---
+# State of the VM. May be 'present' or 'absent'.
+libvirt_vm_state: present
+
+# Name of the VM.
+libvirt_vm_name:
+
+# Memory in MB.
+libvirt_vm_memory_mb:
+
+# Number of vCPUs.
+libvirt_vm_vcpus:
+
+# List of volumes.
+libvirt_vm_volumes: []
+
+# List of network interfaces.
+libvirt_vm_interfaces: []
+
+# Path to cache downloaded images.
+libvirt_vm_image_cache_path:
+
+# List of authorized SSH public keys.
+#libvirt_vm_public_keys: []

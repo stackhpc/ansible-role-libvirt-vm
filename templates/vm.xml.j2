@@ -1,0 +1,30 @@
+<domain type='kvm'>
+  <name>{{ libvirt_vm_name }}</name>
+  <memory>{{ libvirt_vm_memory_mb | int * 1024 }}</memory>
+  <vcpu>{{ libvirt_vm_vcpus }}</vcpu>
+  <clock sync="localtime"/>
+  <os>
+    <type arch='x86_64'>hvm</type>
+  </os>
+  <devices>
+{% for volume in libvirt_vm_volumes %}
+    <disk type='volume' device='{{ volume.device | default('disk') }}'>
+      <driver name='qemu' type='{{ volume.format }}'/>
+      <source pool='{{ volume.pool }}' volume='{{ volume.name }}'/>
+      <target dev='vd{{ 'abcdefghijklmnopqrstuvwxyz'[loop.index] }}'/>
+    </disk>
+{% endfor %}
+{% for interface in libvirt_vm_interfaces %}
+    <interface type='network'>
+      <source network='{{ interface.network }}'/>
+      <model type='virtio'/>
+    </interface>
+{% endfor %}
+    <serial type='pty'>
+       <target port='0'/>
+     </serial>
+     <console type='pty'>
+       <target type='serial' port='0'/>
+     </console>
+  </devices>
+</domain>

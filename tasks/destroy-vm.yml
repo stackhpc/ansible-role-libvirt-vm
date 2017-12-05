@@ -1,0 +1,20 @@
+---
+# The destroyed state does not seem to be idempotent, so check whether the VM
+# exists before destroying it.
+- name: Check the VM's status
+  virt:
+    name: "{{ libvirt_vm_name }}"
+    command: list_vms
+  register: result
+
+- block:
+    - name: Ensure the VM is absent
+      virt:
+        name: "{{ libvirt_vm_name }}"
+        state: destroyed
+
+    - name: Ensure the VM is undefined
+      virt:
+        name: "{{ libvirt_vm_name }}"
+        command: undefine
+  when: libvirt_vm_name in result.list_vms

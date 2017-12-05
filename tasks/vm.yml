@@ -1,0 +1,16 @@
+---
+- name: Ensure the VM is defined
+  virt:
+    name: "{{ libvirt_vm_name }}"
+    command: define
+    xml: "{{ lookup('template', 'vm.xml.j2') }}"
+
+- name: Ensure the VM is running
+  virt:
+    name: "{{ libvirt_vm_name }}"
+    state: running
+
+- name: Ensure the VM is started at boot
+  virt:
+    name: "{{ libvirt_vm_name }}"
+    command: autostart
