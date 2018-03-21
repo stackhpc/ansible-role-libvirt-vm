@@ -11,6 +11,17 @@ libvirt_vm_memory_mb:
 # Number of vCPUs.
 libvirt_vm_vcpus:
 
+# Virtualisation engine. If not set, the role will attempt to auto-detect the
+# optimal engine to use.
+libvirt_vm_engine:
+
+# Path to emulator binary. If not set, the role will attempt to auto-detect the
+# correct emulator to use.
+libvirt_vm_emulator:
+
+# CPU architecture.
+libvirt_vm_arch: x86_64
+
 # List of volumes.
 libvirt_vm_volumes: []
 
