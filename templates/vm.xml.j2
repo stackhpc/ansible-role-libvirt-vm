@@ -26,11 +26,13 @@
       <model type='virtio'/>
     </interface>
 {% endfor %}
-    <serial type='pty'>
-       <target port='0'/>
+     <serial type='file'>
+       <source path='{{ libvirt_vm_console_log_path }}'/>
      </serial>
-     <console type='pty'>
-       <target type='serial' port='0'/>
+     <serial type='pty'/>
+     <console type='file'>
+       <source path='{{ libvirt_vm_console_log_path }}'/>
+       <target type='serial'/>
      </console>
   </devices>
 </domain>

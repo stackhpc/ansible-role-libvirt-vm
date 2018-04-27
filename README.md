@@ -50,6 +50,9 @@ allocated.
 Each network interface is defined with the following dict:
 - `network`: Name of the network to which an interface should be attached.
 
+`libvirt_vm_console_log_path`: Path to console log file. Default is
+`/var/log/libvirt/qemu/{{ libvirt_vm_name }}-console.log`.
+
 `libvirt_vm_image_cache_path`: path to cache downloaded images.
 
 Dependencies

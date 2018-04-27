@@ -34,6 +34,9 @@ libvirt_vm_volumes: []
 # List of network interfaces.
 libvirt_vm_interfaces: []
 
+# Path to console log file.
+libvirt_vm_console_log_path: "/var/log/libvirt-consoles/{{ libvirt_vm_name }}.log"
+
 # Path to cache downloaded images.
 libvirt_vm_image_cache_path:
 

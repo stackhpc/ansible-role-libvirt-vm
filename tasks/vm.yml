@@ -1,4 +1,14 @@
 ---
+- name: Ensure the VM console log directory exists
+  file:
+    path: "{{ libvirt_vm_console_log_path | dirname }}"
+    state: directory
+    owner: qemu
+    group: qemu
+    recurse: true
+    mode: 0770
+  become: true
+
 - name: Ensure the VM is defined
   virt:
     name: "{{ libvirt_vm_name }}"
