@@ -5,6 +5,7 @@
   <clock sync="localtime"/>
   <os>
     <type arch='{{ libvirt_vm_arch }}'{% if libvirt_vm_machine is not none %} machine='{{ libvirt_vm_machine }}'{% endif %}>hvm</type>
+    <bootmenu enable='no'/>
   </os>
   <cpu{% if libvirt_vm_cpu_mode is not none %} mode='{{ libvirt_vm_cpu_mode }}'{% endif %}>
     <model fallback='allow'/>
