@@ -29,6 +29,12 @@ attempt to auto-detect the correct emulator to use.
 
 `libvirt_vm_arch`: CPU architecture, default is `x86_64`.
 
+`libvirt_vm_machine`: Virtual machine type. Default is `None` if
+`libvirt_vm_engine` is `kvm`, otherwise `pc-1.0`.
+
+`libvirt_vm_cpu_mode`: Virtual machine CPU mode. Default is `host-passthrough`
+if `libvirt_vm_engine` is `kvm`, otherwise `host-model`.
+
 `libvirt_vm_volumes`: a list of volumes to attach to the VM.  Each volume is
 defined with the following dict:
 - `name`: Name to associate with the volume being created.

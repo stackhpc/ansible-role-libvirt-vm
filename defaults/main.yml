@@ -22,6 +22,12 @@ libvirt_vm_emulator:
 # CPU architecture.
 libvirt_vm_arch: x86_64
 
+# Virtual machine type.
+libvirt_vm_machine: "{{ None if libvirt_vm_engine == 'kvm' else 'pc-1.0' }}"
+
+# Virtual machine CPU mode.
+libvirt_vm_cpu_mode: "{{ 'host-passthrough' if libvirt_vm_engine == 'kvm' else 'host-model' }}"
+
 # List of volumes.
 libvirt_vm_volumes: []
 

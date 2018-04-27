@@ -4,11 +4,11 @@
   <vcpu>{{ libvirt_vm_vcpus }}</vcpu>
   <clock sync="localtime"/>
   <os>
-    <type arch='{{ libvirt_vm_arch }}'>hvm</type>
+    <type arch='{{ libvirt_vm_arch }}'{% if libvirt_vm_machine is not none %} machine='{{ libvirt_vm_machine }}'{% endif %}>hvm</type>
   </os>
-  {% if libvirt_vm_engine == 'kvm' %}
-  <cpu mode='host-passthrough'/>
-  {% endif %}
+  <cpu{% if libvirt_vm_cpu_mode is not none %} mode='{{ libvirt_vm_cpu_mode }}'{% endif %}>
+    <model fallback='allow'/>
+  </cpu>
   <devices>
     <emulator>{{ libvirt_vm_emulator }}</emulator>
 {% for volume in libvirt_vm_volumes %}
