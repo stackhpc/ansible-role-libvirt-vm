@@ -18,6 +18,8 @@ Role Variables
 - `libvirt_vm_emulator`: path to emulator binary. If not set, the role will
   attempt to auto-detect the correct emulator to use.
 
+- `libvirt_vm_arch`: CPU architecture, default is `x86_64`.
+
 - `libvirt_vms`: list of VMs to be created/destroyed. Each one may have the
   following attributes:
 
@@ -29,8 +31,6 @@ Role Variables
     - `memory_mb`: the memory to assign to the VM, in megabytes.
     
     - `vcpus`: the number of VCPU cores to assign to the VM.
-    
-    - `arch`: CPU architecture, default is `x86_64`.
     
     - `machine`: Virtual machine type. Default is `None` if
       `engine` is `kvm`, otherwise `pc-1.0`.
@@ -61,8 +61,8 @@ Role Variables
 
 N.B. the following variables are deprecated: `libvirt_vm_state`,
 `libvirt_vm_name`, `libvirt_vm_memory_mb`, `libvirt_vm_vcpus`,
-`libvirt_vm_engine`, `libvirt_vm_arch`, `libvirt_vm_machine`,
-`libvirt_vm_cpu_mode`, `libvirt_vm_volumes`, `libvirt_vm_interfaces` and
+`libvirt_vm_engine`, `libvirt_vm_machine`, `libvirt_vm_cpu_mode`,
+`libvirt_vm_volumes`, `libvirt_vm_interfaces` and
 `libvirt_vm_console_log_path`. If the variable `libvirt_vms` is left unset, its
 default value will be a singleton list containing a VM specification using
 these deprecated variables.
