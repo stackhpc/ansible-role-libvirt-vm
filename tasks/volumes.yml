@@ -26,6 +26,6 @@
   with_items: "{{ libvirt_vm_volumes }}"
   register: volume_result
   changed_when:
-    - volume_result | success
+    - volume_result is success
     - (volume_result.stdout | from_json).changed | default(True)
   become: true
