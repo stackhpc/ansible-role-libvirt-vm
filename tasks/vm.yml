@@ -14,9 +14,11 @@
     name: "{{ libvirt_vm_name }}"
     command: define
     xml: "{{ lookup('template', 'vm.xml.j2') }}"
+  become: true
 
 - name: Ensure the VM is running and started at boot
   virt:
     name: "{{ libvirt_vm_name }}"
     autostart: true
     state: running
+  become: true

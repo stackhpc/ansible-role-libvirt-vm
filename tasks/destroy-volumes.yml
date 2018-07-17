@@ -9,3 +9,4 @@
   changed_when:
     - volume_result | success
     - (volume_result.stdout | from_json).changed | default(True)
+  become: yes

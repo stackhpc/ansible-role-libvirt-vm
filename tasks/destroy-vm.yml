@@ -6,15 +6,18 @@
     name: "{{ libvirt_vm_name }}"
     command: list_vms
   register: result
+  become: yes
 
 - block:
     - name: Ensure the VM is absent
       virt:
         name: "{{ libvirt_vm_name }}"
         state: destroyed
+      become: yes
 
     - name: Ensure the VM is undefined
       virt:
         name: "{{ libvirt_vm_name }}"
         command: undefine
+      become: yes
   when: libvirt_vm_name in result.list_vms
