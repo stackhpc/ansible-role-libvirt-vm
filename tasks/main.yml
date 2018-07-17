@@ -4,24 +4,39 @@
   when: "libvirt_vms | rejectattr('state', 'eq', 'absent')"
 
 - include_tasks: volumes.yml
+  vars:
+    libvirt_vm_volumes: "{{ vm.volumes | default([]) }}"
   with_items: "{{ libvirt_vms }}"
   loop_control:
     loop_var: vm
   when: (vm.state | default('present')) == 'present'
 
 - include_tasks: vm.yml
+  vars:
+    libvirt_vm_console_log_path: "{{ vm.console_log_path | default(libvirt_vm_default_console_log_dir + '/' +  vm.name + 'console.log') }}"
+    libvirt_vm_name: "{{ vm.name }}"
+    machine_default: "{{ none if libvirt_vm_engine == 'kvm' else 'pc-1.0' }}"
+    libvirt_vm_machine: "{{ vm.machine | default(machine_default) }}"
+    cpu_mode_default: "{{ 'host-passthrough' if libvirt_vm_engine == 'kvm' else 'host-model' }}"
+    libvirt_vm_cpu_mode: "{{ vm.cpu_mode | default(cpu_mode_default) }}"
+    libvirt_vm_volumes: "{{ vm.volumes | default([]) }}"
+    libvirt_vm_interfaces: "{{ vm.interfaces | default([]) }}"
   with_items: "{{ libvirt_vms }}"
   loop_control:
     loop_var: vm
   when: (vm.state | default('present')) == 'present'
 
 - include_tasks: destroy-volumes.yml
+  vars:
+    libvirt_vm_volumes: "{{ vm.volumes | default([]) }}"
   with_items: "{{ libvirt_vms }}"
   loop_control:
     loop_var: vm
   when: (vm.state | default('present')) == 'absent'
 
 - include_tasks: destroy-vm.yml
+  vars:
+    libvirt_vm_name: "{{ vm.name }}"
   with_items: "{{ libvirt_vms }}"
   loop_control:
     loop_var: vm
