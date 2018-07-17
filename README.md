@@ -12,6 +12,13 @@ be preconfigured with libvirt/KVM.
 Role Variables
 --------------
 
+- `libvirt_vm_default_console_log_dir`: The default directory in which to store
+  VM console logs, if a VM-specific log file path is not given. Default is
+  "/var/log/libvirt/qemu/".
+
+- `libvirt_image_cache_path`: The directory in which to cache downloaded
+  images. Default is "/tmp/".
+
 - `libvirt_vm_engine`: virtualisation engine. If not set, the role will attempt
   to auto-detect the optimal engine to use.
 
@@ -33,10 +40,10 @@ Role Variables
     - `vcpus`: the number of VCPU cores to assign to the VM.
     
     - `machine`: Virtual machine type. Default is `None` if
-      `engine` is `kvm`, otherwise `pc-1.0`.
+      `libvirt_vm_engine` is `kvm`, otherwise `pc-1.0`.
     
-    - `cpu_mode`: Virtual machine CPU mode. Default is
-      `host-passthrough` if `engine` is `kvm`, otherwise `host-model`.
+    - `cpu_mode`: Virtual machine CPU mode. Default is `host-passthrough` if
+      `libvirt_vm_engine` is `kvm`, otherwise `host-model`.
     
     - `volumes`: a list of volumes to attach to the VM.  Each volume is
       defined with the following dict:
@@ -54,9 +61,7 @@ Role Variables
         - `network`: Name of the network to which an interface should be attached.
     
     - `console_log_path`: Path to console log file. Default is
-      `/var/log/libvirt/qemu/{{ libvirt_vm_name }}-console.log`.
-    
-    - `image_cache_path`: path to cache downloaded images.
+      `{{ libvirt_vm_default_console_log_dir }}/{{ name }}-console.log`.
 
 
 N.B. the following variables are deprecated: `libvirt_vm_state`,
