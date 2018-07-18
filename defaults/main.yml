@@ -56,11 +56,12 @@ libvirt_vms:
 # below deprecated variables.
 
 libvirt_vm_state:
-libvirt_vm_name:
-libvirt_vm_memory_mb:
-libvirt_vm_vcpus:
 libvirt_vm_machine:
 libvirt_vm_cpu_mode:
 libvirt_vm_volumes:
 libvirt_vm_interfaces:
 libvirt_vm_console_log_path:
+# Required, so we should fail if not set.
+#libvirt_vm_name:
+#libvirt_vm_memory_mb:
+#libvirt_vm_vcpus:
