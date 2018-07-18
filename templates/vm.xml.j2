@@ -1,42 +1,42 @@
 <domain type='{{ libvirt_vm_engine }}'>
-  <name>{{ libvirt_vm_name }}</name>
-  <memory>{{ libvirt_vm_memory_mb | int * 1024 }}</memory>
-  <vcpu>{{ libvirt_vm_vcpus }}</vcpu>
+  <name>{{ vm.name }}</name>
+  <memory>{{ vm.memory_mb | int * 1024 }}</memory>
+  <vcpu>{{ vm.vcpus }}</vcpu>
   <clock sync="localtime"/>
   <on_poweroff>destroy</on_poweroff>
   <on_reboot>restart</on_reboot>
   <on_crash>destroy</on_crash>
   <os>
-    <type arch='{{ libvirt_vm_arch }}'{% if libvirt_vm_machine is not none %} machine='{{ libvirt_vm_machine }}'{% endif %}>hvm</type>
+    <type arch='{{ libvirt_vm_arch }}'{% if machine is not none %} machine='{{ machine }}'{% endif %}>hvm</type>
     <bootmenu enable='no'/>
     <boot dev='hd'/>
     <boot dev='network'/>
     <bios useserial='yes'/>
   </os>
-  <cpu{% if libvirt_vm_cpu_mode is not none %} mode='{{ libvirt_vm_cpu_mode }}'{% endif %}>
+  <cpu{% if cpu_mode is not none %} mode='{{ cpu_mode }}'{% endif %}>
     <model fallback='allow'/>
   </cpu>
   <devices>
     <emulator>{{ libvirt_vm_emulator }}</emulator>
-{% for volume in libvirt_vm_volumes %}
+{% for volume in volumes %}
     <disk type='volume' device='{{ volume.device | default('disk') }}'>
       <driver name='qemu' type='{{ volume.format }}'/>
       <source pool='{{ volume.pool }}' volume='{{ volume.name }}'/>
       <target dev='vd{{ 'abcdefghijklmnopqrstuvwxyz'[loop.index] }}'/>
     </disk>
 {% endfor %}
-{% for interface in libvirt_vm_interfaces %}
+{% for interface in interfaces %}
     <interface type='network'>
       <source network='{{ interface.network }}'/>
       <model type='virtio'/>
     </interface>
 {% endfor %}
      <serial type='file'>
-       <source path='{{ libvirt_vm_console_log_path }}'/>
+       <source path='{{ console_log_path }}'/>
      </serial>
      <serial type='pty'/>
      <console type='file'>
-       <source path='{{ libvirt_vm_console_log_path }}'/>
+       <source path='{{ console_log_path }}'/>
        <target type='serial'/>
      </console>
   </devices>

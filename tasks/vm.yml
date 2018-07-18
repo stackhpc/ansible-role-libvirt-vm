@@ -1,7 +1,7 @@
 ---
 - name: Ensure the VM console log directory exists
   file:
-    path: "{{ libvirt_vm_console_log_path | dirname }}"
+    path: "{{ console_log_path | dirname }}"
     state: directory
     owner: qemu
     group: qemu
@@ -11,14 +11,14 @@
 
 - name: Ensure the VM is defined
   virt:
-    name: "{{ libvirt_vm_name }}"
+    name: "{{ vm.name }}"
     command: define
     xml: "{{ lookup('template', 'vm.xml.j2') }}"
   become: true
 
 - name: Ensure the VM is running and started at boot
   virt:
-    name: "{{ libvirt_vm_name }}"
+    name: "{{ vm.name }}"
     autostart: true
     state: running
   become: true
