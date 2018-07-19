@@ -2,7 +2,7 @@
 
 # The default directory in which to store VM console logs, if a VM-specific log
 # file path is not given.
-libvirt_vm_default_console_log_dir: "/var/log/libvirt/qemu/"
+libvirt_vm_default_console_log_dir: "/var/log/libvirt-consoles/"
 
 # Path to cache downloaded images.
 libvirt_image_cache_path: "/tmp/"
