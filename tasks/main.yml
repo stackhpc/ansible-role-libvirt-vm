@@ -1,5 +1,6 @@
 ---
 - block:
+    - include: autodetect.yml
     - include: volumes.yml
     - include: vm.yml
   when: libvirt_vm_state == 'present'

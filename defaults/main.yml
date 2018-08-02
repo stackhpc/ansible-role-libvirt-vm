@@ -11,6 +11,23 @@ libvirt_vm_memory_mb:
 # Number of vCPUs.
 libvirt_vm_vcpus:
 
+# Virtualisation engine. If not set, the role will attempt to auto-detect the
+# optimal engine to use.
+libvirt_vm_engine:
+
+# Path to emulator binary. If not set, the role will attempt to auto-detect the
+# correct emulator to use.
+libvirt_vm_emulator:
+
+# CPU architecture.
+libvirt_vm_arch: x86_64
+
+# Virtual machine type.
+libvirt_vm_machine: "{{ None if libvirt_vm_engine == 'kvm' else 'pc-1.0' }}"
+
+# Virtual machine CPU mode.
+libvirt_vm_cpu_mode: "{{ 'host-passthrough' if libvirt_vm_engine == 'kvm' else 'host-model' }}"
+
 # List of volumes.
 libvirt_vm_volumes: []
 

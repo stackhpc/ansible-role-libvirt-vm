@@ -1,12 +1,18 @@
-<domain type='kvm'>
+<domain type='{{ libvirt_vm_engine }}'>
   <name>{{ libvirt_vm_name }}</name>
   <memory>{{ libvirt_vm_memory_mb | int * 1024 }}</memory>
   <vcpu>{{ libvirt_vm_vcpus }}</vcpu>
   <clock sync="localtime"/>
   <os>
-    <type arch='x86_64'>hvm</type>
+    <type arch='{{ libvirt_vm_arch }}'{% if libvirt_vm_machine is not none %} machine='{{ libvirt_vm_machine }}'{% endif %}>hvm</type>
+    <bootmenu enable='no'/>
+    <bios useserial='yes'/>
   </os>
+  <cpu{% if libvirt_vm_cpu_mode is not none %} mode='{{ libvirt_vm_cpu_mode }}'{% endif %}>
+    <model fallback='allow'/>
+  </cpu>
   <devices>
+    <emulator>{{ libvirt_vm_emulator }}</emulator>
 {% for volume in libvirt_vm_volumes %}
     <disk type='volume' device='{{ volume.device | default('disk') }}'>
       <driver name='qemu' type='{{ volume.format }}'/>
