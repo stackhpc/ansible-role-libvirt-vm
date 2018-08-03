@@ -60,6 +60,11 @@ Role Variables
       Each network interface is defined with the following dict:
         - `network`: Name of the network to which an interface should be attached.
 
+    - `console_log_enabled`: if `true`, log console output to a file at the
+      path specified by `console_log_path`, **instead of** to a PTY. If
+      `false`, direct terminal output to a PTY at serial port 0. Default is
+      `false`.
+
     - `console_log_path`: Path to console log file. Default is
       `{{ libvirt_vm_default_console_log_dir }}/{{ name }}-console.log`.
 

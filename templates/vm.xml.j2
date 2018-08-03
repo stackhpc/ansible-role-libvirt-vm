@@ -31,13 +31,22 @@
       <model type='virtio'/>
     </interface>
 {% endfor %}
-     <serial type='file'>
-       <source path='{{ console_log_path }}'/>
-     </serial>
-     <serial type='pty'/>
-     <console type='file'>
-       <source path='{{ console_log_path }}'/>
-       <target type='serial'/>
-     </console>
+{% if console_log_enabled | bool %}
+    <serial type='file'>
+      <source path='{{ console_log_path }}'/>
+    </serial>
+    <serial type='pty'/>
+    <console type='file'>
+      <source path='{{ console_log_path }}'/>
+      <target type='serial'/>
+    </console>
+{% else %}
+    <serial type='pty'>
+      <target port='0'/>
+    </serial>
+    <console type='pty'>
+      <target type='serial' port='0'/>
+    </console>
+{% endif %}
   </devices>
 </domain>
