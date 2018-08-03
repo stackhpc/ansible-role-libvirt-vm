@@ -3,14 +3,14 @@
   get_url:
     url: "{{ item }}"
     dest: "{{ libvirt_vm_image_cache_path }}/{{ item | basename }}"
-  with_items: "{{ libvirt_vm_volumes | selectattr('image', 'defined') | map(attribute='image') | list }}"
+  with_items: "{{ volumes | selectattr('image', 'defined') | map(attribute='image') | list }}"
   when: "'http' in item"
 
 - name: Ensure local images are copied
   copy:
     src: "{{ item }}"
     dest: "{{ libvirt_vm_image_cache_path }}/{{ item | basename }}"
-  with_items: "{{ libvirt_vm_volumes | selectattr('image', 'defined') | map(attribute='image') | list }}"
+  with_items: "{{ volumes | selectattr('image', 'defined') | map(attribute='image') | list }}"
   when: "'http' not in item"
 
 - name: Ensure the VM volumes exist
@@ -23,8 +23,9 @@
     {% if item.image is defined %}
     {{ libvirt_vm_image_cache_path }}/{{ item.image | basename }}
     {% endif %}
-  with_items: "{{ libvirt_vm_volumes }}"
+  with_items: "{{ volumes }}"
   register: volume_result
   changed_when:
-    - volume_result | success
+    - volume_result is success
     - (volume_result.stdout | from_json).changed | default(True)
+  become: true

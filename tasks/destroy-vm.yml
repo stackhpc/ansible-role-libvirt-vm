@@ -3,18 +3,21 @@
 # exists before destroying it.
 - name: Check the VM's status
   virt:
-    name: "{{ libvirt_vm_name }}"
+    name: "{{ vm.name }}"
     command: list_vms
   register: result
+  become: yes
 
 - block:
     - name: Ensure the VM is absent
       virt:
-        name: "{{ libvirt_vm_name }}"
+        name: "{{ vm.name }}"
         state: destroyed
+      become: yes
 
     - name: Ensure the VM is undefined
       virt:
-        name: "{{ libvirt_vm_name }}"
+        name: "{{ vm.name }}"
         command: undefine
-  when: libvirt_vm_name in result.list_vms
+      become: yes
+  when: vm.name in result.list_vms

@@ -1,15 +1,14 @@
 ---
-# State of the VM. May be 'present' or 'absent'.
-libvirt_vm_state: present
 
-# Name of the VM.
-libvirt_vm_name:
+# The default directory in which to store VM console logs, if a VM-specific log
+# file path is not given.
+libvirt_vm_default_console_log_dir: "/var/log/libvirt-consoles/"
 
-# Memory in MB.
-libvirt_vm_memory_mb:
+# Path to cache downloaded images.
+libvirt_image_cache_path: "/tmp/"
 
-# Number of vCPUs.
-libvirt_vm_vcpus:
+# CPU architecture.
+libvirt_vm_arch: x86_64
 
 # Virtualisation engine. If not set, the role will attempt to auto-detect the
 # optimal engine to use.
@@ -19,23 +18,50 @@ libvirt_vm_engine:
 # correct emulator to use.
 libvirt_vm_emulator:
 
-# CPU architecture.
-libvirt_vm_arch: x86_64
+# A list of specifications of VMs to be created.
+# For backwards compatibility, libvirt_vms defaults to a singleton list using
+# the values of the deprecated variables below.
+# See README.md or tasks/main.yml for these attributes' defaults.
+libvirt_vms:
+      # State of the VM. May be 'present' or 'absent'.
+    - state: "{{ libvirt_vm_state }}"
 
-# Virtual machine type.
-libvirt_vm_machine: "{{ None if libvirt_vm_engine == 'kvm' else 'pc-1.0' }}"
+      # Name of the VM.
+      name: "{{ libvirt_vm_name }}"
 
-# Virtual machine CPU mode.
-libvirt_vm_cpu_mode: "{{ 'host-passthrough' if libvirt_vm_engine == 'kvm' else 'host-model' }}"
+      # Memory in MB.
+      memory_mb: "{{ libvirt_vm_memory_mb }}"
 
-# List of volumes.
-libvirt_vm_volumes: []
+      # Number of vCPUs.
+      vcpus: "{{ libvirt_vm_vcpus }}"
 
-# List of network interfaces.
-libvirt_vm_interfaces: []
+      # Virtual machine type.
+      machine: "{{ libvirt_vm_machine }}"
 
-# Path to cache downloaded images.
-libvirt_vm_image_cache_path:
+      # Virtual machine CPU mode.
+      cpu_mode: "{{ libvirt_vm_cpu_mode }}"
 
-# List of authorized SSH public keys.
-#libvirt_vm_public_keys: []
+      # List of volumes.
+      volumes: "{{ libvirt_vm_volumes }}"
+
+      # List of network interfaces.
+      interfaces: "{{ libvirt_vm_interfaces }}"
+
+      # Path to console log file.
+      console_log_path: "{{ libvirt_vm_console_log_path }}"
+
+
+### DEPRECATED ###
+# Use the above settings for each item within `libvirt_vms`, instead of the
+# below deprecated variables.
+
+libvirt_vm_state:
+libvirt_vm_machine:
+libvirt_vm_cpu_mode:
+libvirt_vm_volumes:
+libvirt_vm_interfaces:
+libvirt_vm_console_log_path:
+# Required, so we should fail if not set.
+#libvirt_vm_name:
+#libvirt_vm_memory_mb:
+#libvirt_vm_vcpus:

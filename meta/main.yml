@@ -2,7 +2,7 @@
 galaxy_info:
   author: Mark Goddard
   description: >
-    Role to configure and create a VM on a Libvirt/KVM hypervisor
+    Role to configure and create VMs on a Libvirt/KVM hypervisor
   company: StackHPC Ltd
   license: Apache2
   min_ansible_version: 2.0
