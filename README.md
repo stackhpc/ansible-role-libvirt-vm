@@ -32,34 +32,39 @@ Role Variables
 
     - `state`: set to `present` to create or `absent` to destroy the VM.
       Defaults to `present`.
-    
+
     - `name`: the name to assign to the VM.
-    
+
     - `memory_mb`: the memory to assign to the VM, in megabytes.
-    
+
     - `vcpus`: the number of VCPU cores to assign to the VM.
-    
+
     - `machine`: Virtual machine type. Default is `None` if
       `libvirt_vm_engine` is `kvm`, otherwise `pc-1.0`.
-    
+
     - `cpu_mode`: Virtual machine CPU mode. Default is `host-passthrough` if
       `libvirt_vm_engine` is `kvm`, otherwise `host-model`.
-    
+
     - `volumes`: a list of volumes to attach to the VM.  Each volume is
       defined with the following dict:
         - `name`: Name to associate with the volume being created.
-        - `device`: `disk` 
+        - `device`: `disk`
         - `format`: options include `raw`, `qcow2`, `vmdk`.  See `man virsh` for the
-          full range.  Default is `qcow2` 
+          full range.  Default is `qcow2`
         - `capacity`: volume capacity (can be suffixed with M,G,T or MB,GB,TB, etc)
         - `image`: (optional) a URL to an image with which the volume is initalised.
         - `pool`: Name or UUID of the storage pool from which the volume should be
           allocated.
-    
+
     - `interfaces`: a list of network interfaces to attach to the VM.
       Each network interface is defined with the following dict:
         - `network`: Name of the network to which an interface should be attached.
-    
+
+    - `console_log_enabled`: if `true`, log console output to a file at the
+      path specified by `console_log_path`, **instead of** to a PTY. If
+      `false`, direct terminal output to a PTY at serial port 0. Default is
+      `false`.
+
     - `console_log_path`: Path to console log file. Default is
       `{{ libvirt_vm_default_console_log_dir }}/{{ name }}-console.log`.
 
