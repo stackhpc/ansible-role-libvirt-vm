@@ -58,7 +58,25 @@ Role Variables
 
     - `interfaces`: a list of network interfaces to attach to the VM.
       Each network interface is defined with the following dict:
-        - `network`: Name of the network to which an interface should be attached.
+
+        - `type`: The type of the interface. Possible values:
+
+            - `network`: Attaches the interface to a named Libvirt virtual
+              network. This is the default value.
+            - `direct`: Directly attaches the interface to one of the host's
+              physical interfaces, using the `macvtap` driver.
+        - `network`: Name of the network to which an interface should be
+          attached. Must be specified if and only if the interface `type` is
+          `network`.
+        - `source`: A dict defining the host interface to which this
+          VM interface should be attached. Must be specified if and only if the
+          interface `type` is `direct`. Includes the following attributes:
+
+            - `dev`: The name of the host interface to which this VM interface
+              should be attached.
+            - `mode`: options include `vepa`, `bridge`, `private` and
+              `passthrough`. See `man virsh` for more details. Default is
+              `vepa`.
 
     - `console_log_enabled`: if `true`, log console output to a file at the
       path specified by `console_log_path`, **instead of** to a PTY. If

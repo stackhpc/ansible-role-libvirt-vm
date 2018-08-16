@@ -10,6 +10,12 @@
   when: console_log_enabled | bool
   become: true
 
+- name: Validate VM interfaces
+  include_tasks: check-interface.yml
+  vars:
+    interface: "{{ item }}"
+  with_items: "{{ vm.interfaces }}"
+
 - name: Ensure the VM is defined
   virt:
     name: "{{ vm.name }}"

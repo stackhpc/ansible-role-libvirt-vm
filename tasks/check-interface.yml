@@ -1,0 +1,21 @@
+---
+- name: Check network interface has a network name
+  fail:
+    msg: >
+      The interface definition {{ interface }} has type 'network', but does not have
+      a network name defined.
+  when:
+    - interface.type is not defined or
+      interface.type == 'network'
+    - interface.network is not defined
+
+- name: Check direct interface has an interface device name
+  fail:
+    msg: >
+      The interface definition {{ interface }} has type 'direct', but does not have
+      a host source device defined.
+  when:
+    - interface.type is defined
+    - interface.type == 'direct'
+    - interface.source is not defined or
+      interface.source.dev is not defined

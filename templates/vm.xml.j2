@@ -26,8 +26,13 @@
     </disk>
 {% endfor %}
 {% for interface in interfaces %}
+{% if interface.type is defined and interface.type == 'direct' %}
+    <interface type='direct'>
+      <source dev='{{ interface.source.dev }}' mode='{{ interface.source.mode | default('vepa') }}'/>
+{% else %}
     <interface type='network'>
       <source network='{{ interface.network }}'/>
+{% endif %}
       <model type='virtio'/>
     </interface>
 {% endfor %}
