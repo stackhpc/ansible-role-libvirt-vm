@@ -4,6 +4,12 @@
 # file path is not given.
 libvirt_vm_default_console_log_dir: "/var/log/libvirt-consoles/"
 
+# The default format for Libvirt volumes.
+libvirt_volume_default_format: qcow2
+
+# The default device for Libvirt volumes.
+libvirt_volume_default_device: disk
+
 # Path to cache downloaded images.
 libvirt_image_cache_path: "/tmp/"
 

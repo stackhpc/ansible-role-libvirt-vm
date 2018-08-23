@@ -19,7 +19,7 @@
     {{ item.name }}
     {{ item.pool }}
     {{ item.capacity }}
-    {{ item.format | default('qcow2') }}
+    {{ item.format | default(libvirt_volume_default_format) }}
     {% if item.image is defined %}
     {{ libvirt_vm_image_cache_path }}/{{ item.image | basename }}
     {% endif %}
