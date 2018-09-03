@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: libvirt-vm
   author: Mark Goddard
   description: >
     Role to configure and create VMs on a Libvirt/KVM hypervisor
