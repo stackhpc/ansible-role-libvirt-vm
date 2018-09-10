@@ -24,6 +24,8 @@
     cpu_mode: "{{ vm.cpu_mode | default(cpu_mode_default, true) }}"
     volumes: "{{ vm.volumes | default([], true) }}"
     interfaces: "{{ vm.interfaces | default([], true) }}"
+    start: "{{ vm.start | default(true) }}"
+    autostart: "{{ vm.autostart | default(true) }}"
   with_items: "{{ libvirt_vms }}"
   loop_control:
     loop_var: vm
