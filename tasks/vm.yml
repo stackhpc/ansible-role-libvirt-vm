@@ -14,7 +14,7 @@
   include_tasks: check-interface.yml
   vars:
     interface: "{{ item }}"
-  with_items: "{{ vm.interfaces }}"
+  with_items: "{{ interfaces }}"
 
 - name: Ensure the VM is defined
   virt:
@@ -26,6 +26,6 @@
 - name: Ensure the VM is running and started at boot
   virt:
     name: "{{ vm.name }}"
-    autostart: true
-    state: running
+    autostart: "{{ autostart | bool }}"
+    state: "{{ 'running' if (start | bool) else 'shutdown' }}"
   become: true

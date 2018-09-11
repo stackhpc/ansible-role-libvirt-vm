@@ -86,6 +86,12 @@ Role Variables
     - `console_log_path`: Path to console log file. Default is
       `{{ libvirt_vm_default_console_log_dir }}/{{ name }}-console.log`.
 
+    - `start`: Whether to immediately start the VM after defining it. Default
+      is `true`.
+
+    - `autostart`: Whether to start the VM when the host starts up. Default is
+      `true`.
+
 
 N.B. the following variables are deprecated: `libvirt_vm_state`,
 `libvirt_vm_name`, `libvirt_vm_memory_mb`, `libvirt_vm_vcpus`,
