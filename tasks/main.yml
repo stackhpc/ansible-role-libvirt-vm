@@ -4,7 +4,7 @@
   # VMs.
   when: >-
     (libvirt_vms | selectattr('state', 'defined')
-       | selectattr('state', 'eq', 'absent') | list) != libvirt_vms
+       | selectattr('state', 'equalto', 'absent') | list) != libvirt_vms
 
 - include_tasks: volumes.yml
   vars:
