@@ -1,4 +1,13 @@
 ---
+- name: Gather os specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version}}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+  tags: vars
+
 - name: Ensure remote images are downloaded
   get_url:
     url: "{{ item }}"
@@ -24,6 +33,7 @@
     {{ libvirt_vm_image_cache_path }}/{{ item.image | basename }}
     {% endif %}
   with_items: "{{ volumes }}"
+  environment: "{{ libvirt_vm_volume_creation_env }}"
   register: volume_result
   changed_when:
     - volume_result is success
