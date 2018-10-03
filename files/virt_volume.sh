@@ -59,12 +59,17 @@ if [[ $result -ne 0 ]]; then
     exit $result
 fi
 
-# Change the ownership of the volume to qemu. Without doing this libvirt cannot
-# access the volume.
-output=$(chown qemu:qemu $output 2>1)
+# Change the ownership of the volume to VOLUME_OWNER:VOLUME_GROUP if
+# these environmental variables are defined. Without doing this libvirt
+# cannot access the volume on RedHat based GNU/Linux distributions.
+existing_owner="$(stat --format '%U' "$output")"
+existing_group="$(stat --format '%G' "$output")"
+new_owner="${VOLUME_OWNER:-$existing_owner}"
+new_group="${VOLUME_GROUP:-$existing_group}"
+output=$(chown "$new_owner":"$new_group" $output 2>1)
 result=$?
 if [[ $result -ne 0 ]]; then
-    echo "Failed to change ownership of the volume to qemu"
+    echo "Failed to change ownership of the volume to $new_owner:$new_group"
     echo "$output"
     virsh vol-delete --pool $POOL --vol $NAME
     exit $result

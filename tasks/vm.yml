@@ -1,10 +1,20 @@
 ---
+- name: Gather os specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version}}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+      skip: true
+  tags: vars
+
 - name: Ensure the VM console log directory exists
   file:
     path: "{{ console_log_path | dirname }}"
     state: directory
-    owner: qemu
-    group: qemu
+    owner: "{{ libvirt_vm_log_owner }}"
+    group: "{{ libvirt_vm_log_owner }}"
     recurse: true
     mode: 0770
   when: console_log_enabled | bool
