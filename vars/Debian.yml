@@ -5,3 +5,18 @@ libvirt_vm_log_owner: libvirt-qemu
 
 # The environment passed to virt_volume.sh
 libvirt_vm_volume_creation_env: {}
+
+# Packages that are only necessary if you require EFI support
+libvirt_vm_extra_packages_efi:
+  - ovmf
+
+# List of extra packages to install
+libvirt_vm_extra_packages: "{{ [] + (libvirt_vm_extra_packages_efi if libvirt_vm_enable_efi_support else []) | unique }}"
+
+# Path to template OVMF efi variable store. A copy will be created
+# for each VM created.
+libvirt_vm_ovmf_efi_variable_store_path: /usr/share/OVMF/OVMF_VARS.fd
+
+# Path to OVMF efi firmware
+libvirt_vm_ovmf_efi_firmware_path: /usr/share/OVMF/OVMF_CODE.fd
+

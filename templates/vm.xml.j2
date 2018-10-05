@@ -12,7 +12,18 @@
     <boot dev='hd'/>
     <boot dev='network'/>
     <bios useserial='yes'/>
+    {% if boot_firmware == "efi"  %}
+      {# NOTE: pflash requires qemu 1.6 or newer. There are alternatives for older versions, but
+               they do not work with secure boot. See OVMF readme for an overview #}
+      <loader readonly='yes' type='pflash'>{{ libvirt_vm_ovmf_efi_firmware_path }}</loader>
+      <loader readonly='no' type='pflash'>{{ ovmf_enrolled_variables_path | default(libvirt_vm_ovmf_efi_variable_store_path) }}</loader>
+    {% endif %}
   </os>
+  <features>
+    {% if enable_feature_acpi %}
+      <acpi/>
+    {% endif %}
+  </features>
   <cpu{% if cpu_mode is not none %} mode='{{ cpu_mode }}'{% endif %}>
     <model fallback='allow'/>
   </cpu>

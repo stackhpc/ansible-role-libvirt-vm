@@ -27,6 +27,12 @@ Role Variables
 
 - `libvirt_vm_arch`: CPU architecture, default is `x86_64`.
 
+- `libvirt_vm_enable_efi_support`: Whether to enable EFI support. By default this
+  will enabled if any of the declared VMs specify the boot_firmware as efi. The
+  certificates and keys needed to enable secure boot are currently only installed
+  on RedHat derived distributions. See: [qemu-ovmf-secureboot](https://github.com/puiterwijk/qemu-ovmf-secureboot)
+  for details of the certificates and keys that are installed.
+
 - `libvirt_vms`: list of VMs to be created/destroyed. Each one may have the
   following attributes:
 
@@ -91,6 +97,8 @@ Role Variables
 
     - `autostart`: Whether to start the VM when the host starts up. Default is
       `true`.
+      
+    - `boot_firmware`: Can be one of: `bios`, or `efi`. Defaults to `bios`.
 
 
 N.B. the following variables are deprecated: `libvirt_vm_state`,

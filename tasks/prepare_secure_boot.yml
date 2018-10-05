@@ -1,0 +1,59 @@
+---
+
+- name: Gather os specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version}}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+      skip: true
+  tags: vars
+
+- name: Ensure ovmf generator checkout directory is owned by ansible_user
+  file:
+    path: "{{ libvirt_ovmf_vars_generator_checkout_path }}"
+    owner: "{{ ansible_user }}"
+    state: directory
+  become: true
+
+- name: Clone ovfm-vars generator
+  git:
+    repo: 'https://github.com/puiterwijk/qemu-ovmf-secureboot'
+    dest: "{{ libvirt_ovmf_vars_generator_checkout_path }}"
+    update: yes
+
+- name: Get checksum of template OVMF vars
+  # We need to keep the generated vars in sync with templated version.
+  # if the OVMF package is updated - we should update a new version with
+  # the signing keys enrolled.
+  stat:
+    path: "{{ libvirt_vm_ovmf_efi_variable_store_path }}"
+    get_checksum: true
+    checksum_algorithm: sha256
+  register: ovmf_template
+
+- name: Register path of generated variables
+  set_fact:
+    ovmf_enrolled_variables_path: "\
+      {{ libvirt_ovmf_vars_generator_output_path }}/\
+      {{ libvirt_ovmf_vars_generator_output_prefix }}\
+      {{ ovmf_template.stat.checksum }}"
+
+- name: Check to see if we have generated these vars before
+  stat:
+    path: "{{ ovmf_enrolled_variables_path }}"
+  register: generated_ovmf
+
+- name: Run OVMF vars generator
+  command: >
+    python {{ libvirt_ovmf_vars_generator_checkout_path}}/ovmf-vars-generator
+    --ovmf-binary {{ libvirt_vm_ovmf_efi_firmware_path }}
+    --uefi-shell-iso {{ libvirt_vm_ovmf_uefi_shell_iso_path }}
+    --ovmf-template-vars {{ libvirt_vm_ovmf_efi_variable_store_path }}
+    --qemu-binary {{ libvirt_vm_emulator }}
+    {% if libvirt_vm_engine == 'kvm' %}--enable-kvm{% endif %}
+    --skip-testing
+    --no-download
+    {{ ovmf_enrolled_variables_path }}
+  when: not generated_ovmf.stat.exists

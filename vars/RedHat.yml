@@ -7,3 +7,39 @@ libvirt_vm_log_owner: qemu
 libvirt_vm_volume_creation_env:
   VOLUME_GROUP: qemu
   VOLUME_OWNER: qemu
+
+# Packages that are only necessary if you require EFI support
+libvirt_vm_extra_packages_efi:
+  - edk2.git-ovmf-x64 # Official OVMF package doesn't boot (CentOS 7.5)
+  - qemu-kvm-ev # Need smm support for secure boot
+
+# List of extra packages to install
+libvirt_vm_extra_packages: "{{ [] + (libvirt_vm_extra_packages_efi if libvirt_vm_enable_efi_support else []) | unique }}"
+
+# Path to template OVMF efi variable store. A copy will be created
+# for each VM created.
+# note(wszumski): official package path is /usr/share/OVMF/OVMF_VARS.fd
+libvirt_vm_ovmf_efi_variable_store_path: /usr/share/edk2.git/ovmf-x64/OVMF_VARS-need-smm.fd
+
+# Path to OVMF efi firmware
+# note(wszumski): official package path is /usr/share/OVMF/OVMF_CODE.secboot.fd
+libvirt_vm_ovmf_efi_firmware_path: /usr/share/edk2.git/ovmf-x64/OVMF_CODE-need-smm.fd
+
+# Path to iso containing signing keys
+# note(wszumski): official package path is /usr/share/OVMF/UefiShell.iso
+libvirt_vm_ovmf_uefi_shell_iso_path: /usr/share/edk2.git/ovmf-x64/UefiShell.iso
+
+# Add custom repository as OVMF package seems to be broken
+libvirt_vm_custom_yum_repos_efi:
+  - name: qemu-firmware-jenkins
+    description: upstream OVMF firmware images
+    baseurl: https://www.kraxel.org/repos/jenkins/
+    gpgcheck: no
+  # Need an updated version of qemu with smm support
+  - name: centos-qemu-ev
+    description: CentOS-$releasever - QEMU EV
+    baseurl: http://mirror.centos.org/$contentdir/$releasever/virt/$basearch/kvm-common/
+    gpgcheck: yes
+
+libvirt_vm_custom_yum_repos: "{{ [] + (libvirt_vm_custom_yum_repos_efi if libvirt_vm_enable_efi_support else []) | unique }}"
+

@@ -1,4 +1,7 @@
 ---
+
+- include_tasks: setup.yml
+
 - include_tasks: autodetect.yml
   # We don't need to know the engine and emulator if we're not creating any new
   # VMs.
@@ -26,6 +29,9 @@
     interfaces: "{{ vm.interfaces | default([], true) }}"
     start: "{{ vm.start | default(true) }}"
     autostart: "{{ vm.autostart | default(true) }}"
+    boot_firmware: "{{ vm.boot_firmware | default('bios', true) | lower }}"
+    enable_feature_acpi_default: "{{ true if boot_firmware == 'efi' else false }}"
+    enable_feature_acpi: "{{ vm.enable_feature_acpi | default(enable_feature_acpi_default, true) }}"
   with_items: "{{ libvirt_vms }}"
   loop_control:
     loop_var: vm
