@@ -34,9 +34,6 @@ libvirt_ovmf_vars_generator_output_path: /var/lib/libvirt/qemu/
 # Prefix of generated variable file name. The checksum of the input will be appended.
 libvirt_ovmf_vars_generator_output_prefix: ovmf_vars_enrolled_
 
-# Whether to enable EFI support.
-libvirt_vm_enable_efi_support: "{{ 'efi' in (libvirt_vms | map(attribute='boot_firmware') | map('lower')) }}"
-
 # A list of specifications of VMs to be created.
 # For backwards compatibility, libvirt_vms defaults to a singleton list using
 # the values of the deprecated variables below.

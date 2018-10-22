@@ -1,7 +1,5 @@
 ---
 
-- include_tasks: setup.yml
-
 - include_tasks: autodetect.yml
   # We don't need to know the engine and emulator if we're not creating any new
   # VMs.
