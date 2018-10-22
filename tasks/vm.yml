@@ -27,7 +27,7 @@
   with_items: "{{ interfaces }}"
 
 - name: Create secure boot template variables
-  include_tasks: prepare_secure_boot.yml
+  include_tasks: prepare-secure-boot.yml
   when:
     - boot_firmware == "efi"
     - libvirt_vm_ovmf_uefi_shell_iso_path is defined
