@@ -1,4 +1,34 @@
 ---
+# This playbook enrolls Platform, Key Exchange, and Signature Database keys
+# in the emulated NVRAM. NVRAM is the storage location for persistent
+# EFI state. The keys that are installed are as follows:
+#
+#  * Platform Key: Red Hat Secure Boot (PK/KEK key 1)/emailAddress=secalert@redhat.com.
+#    This is a Red Hat controlled key which controls modification to the
+#    Key Exchange Keys (KEK).
+#
+#  * Key Exchange Keys:
+#     1) Microsoft Corporation KEK CA 2011
+#     2) Red Hat Secure Boot (PK/KEK key 1)/emailAddress=secalert@redhat.com
+#
+#  The first KEK is used to sign the revocation database obtained from:
+#  http://www.uefi.org/revocationlistfile. This allows you to use: dbxtool
+#  to periodically update your local copy of this blacklist. The second gives
+#  RedHat control over the dbx (Forbidden Signature) and db (Signature) databases.
+#  This essentially makes your computer trust RedHat and Microsoft signed binaries.
+#
+# * Signature database (db) keys:
+#  - Microsoft Windows Production PCA 2011 (for accepting Windows 8, Windows Server 2012 R2, etc boot loaders)
+#  - Microsoft Corporation UEFI CA 2011 (for verifying the shim binary, and PCI expansion ROMs).
+#
+# Further signing keys can be enrolled in the shim binary to allow execution of custom binaries.
+#
+# When a platform key is enrolled, the secure boot mode changes from "setup mode" to "user mode"
+# and secure boot is automatically enabled. Secure boot can only be disabled via the EFI setup
+# menu - this is accessed by pressing delete when the VM is started. It does not seem possible to
+# to control this setting via libvirt or by using a qemu command line option.
+#
+# TODO: Allow installation of custom keys
 
 - name: Gather os specific variables
   include_vars: "{{ item }}"
