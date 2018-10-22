@@ -26,10 +26,10 @@ libvirt_vm_emulator:
 
 # This is where https://github.com/puiterwijk/qemu-ovmf-secureboot will be
 # checked out to.
-libvirt_ovmf_vars_generator_checkout_path: "/opt/qemu-ovmf-secureboot"
+libvirt_ovmf_vars_generator_checkout_path: /opt/qemu-ovmf-secureboot
 
 # Where to output the generated variable store
-libvirt_ovmf_vars_generator_output_path: "{{ libvirt_ovmf_vars_generator_checkout_path }}"
+libvirt_ovmf_vars_generator_output_path: /var/lib/libvirt/qemu/
 
 # Prefix of generated variable file name. The checksum of the input will be appended.
 libvirt_ovmf_vars_generator_output_prefix: ovmf_vars_enrolled_

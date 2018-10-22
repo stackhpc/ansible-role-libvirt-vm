@@ -33,10 +33,19 @@
     checksum_algorithm: sha256
   register: ovmf_template
 
-- name: Register path of generated variables
+- name: Register destination of generated variables
   set_fact:
     ovmf_enrolled_variables_path: "\
       {{ libvirt_ovmf_vars_generator_output_path }}/\
+      {{ libvirt_ovmf_vars_generator_output_prefix }}\
+      {{ ovmf_template.stat.checksum }}"
+
+- name: Register temporary path to output generated variables
+  # We don't want to run the generator with elevated privileges
+  # so use a temporary output before copying into place
+  set_fact:
+    ovmf_enrolled_variables_temp_output_path: "\
+      {{ libvirt_ovmf_vars_generator_checkout_path}}/\
       {{ libvirt_ovmf_vars_generator_output_prefix }}\
       {{ ovmf_template.stat.checksum }}"
 
@@ -55,5 +64,14 @@
     {% if libvirt_vm_engine == 'kvm' %}--enable-kvm{% endif %}
     --skip-testing
     --no-download
-    {{ ovmf_enrolled_variables_path }}
+    {{ ovmf_enrolled_variables_temp_output_path }}
+  when: not generated_ovmf.stat.exists
+
+- name: Ensure libvirt qemu can access the variable template
+  copy: 
+    src: "{{ ovmf_enrolled_variables_temp_output_path }}"
+    dest: "{{ ovmf_enrolled_variables_path }}"
+    owner: "{{ libvirt_vm_log_owner }}"
+    group: "{{ libvirt_vm_log_owner }}"
+  become: true
   when: not generated_ovmf.stat.exists
