@@ -23,6 +23,9 @@
     {% if enable_feature_acpi %}
       <acpi/>
     {% endif %}
+    {% if enable_feature_smm %}
+      <smm/>
+    {% endif %}
   </features>
   <cpu{% if cpu_mode is not none %} mode='{{ cpu_mode }}'{% endif %}>
     <model fallback='allow'/>

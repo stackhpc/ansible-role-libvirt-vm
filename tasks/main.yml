@@ -32,6 +32,8 @@
     boot_firmware: "{{ vm.boot_firmware | default('bios', true) | lower }}"
     enable_feature_acpi_default: "{{ true if boot_firmware == 'efi' else false }}"
     enable_feature_acpi: "{{ vm.enable_feature_acpi | default(enable_feature_acpi_default, true) }}"
+    enable_feature_smm_default: "{{ true if boot_firmware == 'efi' else false }}"
+    enable_feature_smm: "{{ vm.enable_feature_smm | default(enable_feature_smm_default, true) }}"
   with_items: "{{ libvirt_vms }}"
   loop_control:
     loop_var: vm
