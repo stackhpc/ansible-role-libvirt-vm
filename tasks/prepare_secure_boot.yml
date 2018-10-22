@@ -71,7 +71,7 @@
   copy: 
     src: "{{ ovmf_enrolled_variables_temp_output_path }}"
     dest: "{{ ovmf_enrolled_variables_path }}"
-    owner: "{{ libvirt_vm_log_owner }}"
-    group: "{{ libvirt_vm_log_owner }}"
+    owner: "{{ libvirt_vm_qemu_user }}"
+    group: "{{ libvirt_vm_qemu_user }}"
   become: true
   when: not generated_ovmf.stat.exists

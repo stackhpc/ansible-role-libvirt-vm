@@ -1,7 +1,8 @@
 ---
 
-# Who owns the serial console logs in console_log_path
-libvirt_vm_log_owner: qemu
+# This controls ownership of files used by the libvirt qemu process,
+# e.g the serial console logs in console_log_path.
+libvirt_vm_qemu_user: qemu
 
 # The environment passed to virt_volume.sh
 libvirt_vm_volume_creation_env:

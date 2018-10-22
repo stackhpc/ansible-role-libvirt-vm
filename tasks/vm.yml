@@ -13,8 +13,8 @@
   file:
     path: "{{ console_log_path | dirname }}"
     state: directory
-    owner: "{{ libvirt_vm_log_owner }}"
-    group: "{{ libvirt_vm_log_owner }}"
+    owner: "{{ libvirt_vm_qemu_user }}"
+    group: "{{ libvirt_vm_qemu_user }}"
     recurse: true
     mode: 0770
   when: console_log_enabled | bool
