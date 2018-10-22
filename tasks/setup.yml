@@ -11,7 +11,7 @@
   tags: vars
 
 - name: Install custom yum repositories
-  # Although argument splatting is  marked as deprecated:
+  # Although argument splatting is marked as deprecated:
   #
   # [DEPRECATION WARNING]: Using variables for task params is unsafe,
   # especially if the variables come from an external source like facts. This
@@ -20,7 +20,7 @@
   # The core team had a a change of heart and it is actually being preserved:
   # https://github.com/ansible/ansible/pull/43798
   yum_repository: "{{ item }}"
-  loop: "{{ libvirt_vm_custom_yum_repos | default({}) }}"
+  loop: "{{ libvirt_vm_custom_yum_repos | default([]) }}"
   become: true
 
 - name: Install custom packages
