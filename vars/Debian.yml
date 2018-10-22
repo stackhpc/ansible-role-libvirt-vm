@@ -12,7 +12,7 @@ libvirt_vm_extra_packages_efi:
   - ovmf
 
 # List of extra packages to install
-libvirt_vm_extra_packages: "{{ [] + (libvirt_vm_extra_packages_efi if libvirt_vm_enable_efi_support else []) | unique }}"
+libvirt_vm_extra_packages: "{{ libvirt_vm_extra_packages_efi if libvirt_vm_enable_efi_support else [] | unique }}"
 
 # Path to template OVMF efi variable store. A copy will be created
 # for each VM created.
