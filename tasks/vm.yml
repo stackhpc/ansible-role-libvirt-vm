@@ -30,6 +30,7 @@
   include_tasks: prepare-secure-boot.yml
   when:
     - boot_firmware == "efi"
+    - enable_secure_boot
     - libvirt_vm_ovmf_uefi_shell_iso_path is defined
 
 - name: Ensure the VM is defined
