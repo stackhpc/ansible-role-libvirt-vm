@@ -98,7 +98,7 @@
   when: not generated_ovmf.stat.exists
 
 - name: Ensure libvirt qemu can access the variable template
-  copy: 
+  copy:
     src: "{{ ovmf_enrolled_variables_temp_output_path }}"
     dest: "{{ ovmf_enrolled_variables_path }}"
     owner: "{{ libvirt_vm_qemu_user }}"
