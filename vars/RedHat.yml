@@ -12,11 +12,21 @@ libvirt_vm_volume_creation_env:
 # Path to template OVMF efi variable store. A copy will be created
 # for each VM created.
 # note(wszumski): official package path is /usr/share/OVMF/OVMF_VARS.fd
-libvirt_vm_ovmf_efi_variable_store_path: /usr/share/edk2.git/ovmf-x64/OVMF_VARS-need-smm.fd
+libvirt_vm_ovmf_efi_variable_store_path: >-
+  {%- if enable_feature_smm -%}
+  /usr/share/edk2.git/ovmf-x64/OVMF_VARS-need-smm.fd
+  {%- else -%}
+  /usr/share/edk2.git/ovmf-x64/OVMF_VARS-pure-efi.fd
+  {%- endif -%}
 
 # Path to OVMF efi firmware
 # note(wszumski): official package path is /usr/share/OVMF/OVMF_CODE.secboot.fd
-libvirt_vm_ovmf_efi_firmware_path: /usr/share/edk2.git/ovmf-x64/OVMF_CODE-need-smm.fd
+libvirt_vm_ovmf_efi_firmware_path: >-
+  {%- if enable_feature_smm -%}
+  /usr/share/edk2.git/ovmf-x64/OVMF_CODE-need-smm.fd
+  {%- else -%}
+  /usr/share/edk2.git/ovmf-x64/OVMF_CODE-pure-efi.fd
+  {%- endif -%}
 
 # Path to iso containing signing keys
 # note(wszumski): official package path is /usr/share/OVMF/UefiShell.iso
