@@ -30,21 +30,11 @@
 
 - name: Detect the virtualisation emulator
   block:
-    - block:
-        - name: Detect the KVM emulator binary path
-          stat:
-            path: "{{ item }}"
-          register: kvm_emulator_result
-          with_items:
-            - /usr/bin/kvm
-            - /usr/bin/qemu-kvm
-            - /usr/libexec/qemu-kvm
+    - name: Ensure old value stored in detected_libvirt_vm_emulator is cleared
+      set_fact:
+        detected_libvirt_vm_emulator: none
 
-        - name: Set a fact containing the KVM emulator binary path
-          set_fact:
-            libvirt_vm_emulator: "{{ item.item }}"
-          with_items: "{{ kvm_emulator_result.results }}"
-          when: item.stat.exists
+    - include_tasks: detect-kvm.yml
       when: libvirt_vm_engine == 'kvm'
 
     - block:
@@ -55,11 +45,22 @@
 
         - name: Set a fact containing the QEMU emulator binary path
           set_fact:
-            libvirt_vm_emulator: "{{ qemu_emulator_result.stdout }}"
+            detected_libvirt_vm_emulator: "{{ qemu_emulator_result.stdout }}"
+
+        - name: Override the QEMU emulator binary path on RedHat based distros
+          # CentOS 7.5 ships qemu-system-x86-2.0.0-1.el7.6.x86_64, this
+          # does not have smm support. We can use the qemu-kvm binary
+          # from SIG virtualization repository.
+          include_tasks: detect-kvm.yml
+          when:
+            - enable_feature_smm
+            - ansible_os_family == "RedHat"
+            - ansible_architecture == libvirt_vm_arch
+
       when: libvirt_vm_engine == 'qemu'
 
     - name: Fail if unable to detect the emulator
       fail:
         msg: Unable to detect emulator for engine {{ libvirt_vm_engine }}.
-      when: libvirt_vm_emulator is none
+      when: detected_libvirt_vm_emulator is none
   when: libvirt_vm_emulator is none

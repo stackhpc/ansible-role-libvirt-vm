@@ -9,6 +9,20 @@
       skip: true
   tags: vars
 
+- include_tasks: autodetect.yml
+  # We include this here as detection depends on the emulation features that
+  # are requested. We don't need to know the engine and emulator if we're
+  # not creating any newv VMs.
+  when: >-
+    (libvirt_vms | selectattr('state', 'defined')
+       | selectattr('state', 'equalto', 'absent') | list) != libvirt_vms
+
+- name: Set fact containing libvirt emulator
+  set_fact:
+    # The detected emulator may change between VM, but always prefer an explictly
+    # requested emulator
+    emulator: "{{ libvirt_vm_emulator | default(detected_libvirt_vm_emulator, true) }}"
+
 - name: Ensure the VM console log directory exists
   file:
     path: "{{ console_log_path | dirname }}"

@@ -31,7 +31,7 @@
     <model fallback='allow'/>
   </cpu>
   <devices>
-    <emulator>{{ libvirt_vm_emulator }}</emulator>
+    <emulator>{{ emulator }}</emulator>
 {% for volume in volumes %}
     <disk type='volume' device='{{ volume.device | default(libvirt_volume_default_device) }}'>
       <driver name='qemu' type='{{ volume.format | default(libvirt_volume_default_format) }}'/>
