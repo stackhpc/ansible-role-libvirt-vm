@@ -14,7 +14,18 @@
 
     - name: Set a fact containing the virtualisation engine
       set_fact:
-        libvirt_vm_engine: "{% if stat_kvm.stat.exists %}kvm{% else %}qemu{% endif %}"
+        libvirt_vm_engine: >-
+          {%- if ansible_architecture != libvirt_vm_arch -%}
+          {# Virtualisation instructions are generally available only for the host
+          architecture. Ideally we would test for virtualisation instructions, eg. vt-d
+          as it is possible that another architecture could support these even
+          if the emulated cpu architecture is not the same. #}
+          qemu
+          {%- elif stat_kvm.stat.exists -%}
+          kvm
+          {%- else -%}
+          qemu
+          {%- endif -%}
   when: libvirt_vm_engine is none
 
 - name: Detect the virtualisation emulator
