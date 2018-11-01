@@ -1,0 +1,16 @@
+---
+
+- name: Detect the KVM emulator binary path
+  stat:
+    path: "{{ item }}"
+  register: kvm_emulator_result
+  with_items:
+    - /usr/bin/kvm
+    - /usr/bin/qemu-kvm
+    - /usr/libexec/qemu-kvm
+
+- name: Set a fact containing the KVM emulator binary path
+  set_fact:
+    detected_libvirt_vm_emulator: "{{ item.item }}"
+  with_items: "{{ kvm_emulator_result.results }}"
+  when: item.stat.exists

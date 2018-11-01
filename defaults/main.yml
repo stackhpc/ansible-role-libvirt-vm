@@ -24,6 +24,16 @@ libvirt_vm_engine:
 # correct emulator to use.
 libvirt_vm_emulator:
 
+# This is where https://github.com/puiterwijk/qemu-ovmf-secureboot will be
+# checked out to.
+libvirt_ovmf_vars_generator_checkout_path: /opt/qemu-ovmf-secureboot
+
+# Where to output the generated variable store
+libvirt_ovmf_vars_generator_output_path: /var/lib/libvirt/qemu/
+
+# Prefix of generated variable file name. The checksum of the input will be appended.
+libvirt_ovmf_vars_generator_output_prefix: ovmf_vars_enrolled_
+
 # A list of specifications of VMs to be created.
 # For backwards compatibility, libvirt_vms defaults to a singleton list using
 # the values of the deprecated variables below.
@@ -55,6 +65,9 @@ libvirt_vms:
 
       # Path to console log file.
       console_log_path: "{{ libvirt_vm_console_log_path }}"
+
+      # May be one of: bios, or efi.
+      boot_firmware: bios
 
 
 ### DEPRECATED ###

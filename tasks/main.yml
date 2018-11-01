@@ -1,10 +1,4 @@
 ---
-- include_tasks: autodetect.yml
-  # We don't need to know the engine and emulator if we're not creating any new
-  # VMs.
-  when: >-
-    (libvirt_vms | selectattr('state', 'defined')
-       | selectattr('state', 'equalto', 'absent') | list) != libvirt_vms
 
 - include_tasks: volumes.yml
   vars:
@@ -18,7 +12,14 @@
   vars:
     console_log_enabled: "{{ vm.console_log_enabled | default(false) }}"
     console_log_path: "{{ vm.console_log_path | default(libvirt_vm_default_console_log_dir + '/' +  vm.name + '-console.log', true) }}"
-    machine_default: "{{ none if libvirt_vm_engine == 'kvm' else 'pc-1.0' }}"
+    machine_default: >-
+      {%- if boot_firmware == 'efi' -%}
+      q35
+      {%- elif libvirt_vm_engine == 'kvm' -%}
+      none
+      {%- else -%}
+      pc
+      {%- endif -%}
     machine: "{{ vm.machine | default(machine_default, true) }}"
     cpu_mode_default: "{{ 'host-passthrough' if libvirt_vm_engine == 'kvm' else 'host-model' }}"
     cpu_mode: "{{ vm.cpu_mode | default(cpu_mode_default, true) }}"
@@ -26,6 +27,12 @@
     interfaces: "{{ vm.interfaces | default([], true) }}"
     start: "{{ vm.start | default(true) }}"
     autostart: "{{ vm.autostart | default(true) }}"
+    boot_firmware: "{{ vm.boot_firmware | default('bios', true) | lower }}"
+    enable_feature_acpi_default: "{{ true if boot_firmware == 'efi' else false }}"
+    enable_feature_acpi: "{{ vm.enable_feature_acpi | default(enable_feature_acpi_default, true) }}"
+    enable_feature_smm_default: "{{ enable_secure_boot }}"
+    enable_feature_smm: "{{ vm.enable_feature_smm | default(enable_feature_smm_default, true) }}"
+    enable_secure_boot: "{{ vm.enable_secure_boot | default(false, true) | bool }}"
   with_items: "{{ libvirt_vms }}"
   loop_control:
     loop_var: vm
@@ -40,6 +47,8 @@
   when: (vm.state | default('present', true)) == 'absent'
 
 - include_tasks: destroy-vm.yml
+  vars:
+    boot_firmware: "{{ vm.boot_firmware | default('bios', true) | lower }}"
   with_items: "{{ libvirt_vms }}"
   loop_control:
     loop_var: vm

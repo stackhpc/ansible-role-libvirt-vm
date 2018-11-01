@@ -1,0 +1,107 @@
+---
+# This playbook enrolls Platform, Key Exchange, and Signature Database keys
+# in the emulated NVRAM. NVRAM is the storage location for persistent
+# EFI state. The keys that are installed are as follows:
+#
+#  * Platform Key: Red Hat Secure Boot (PK/KEK key 1)/emailAddress=secalert@redhat.com.
+#    This is a Red Hat controlled key which controls modification to the
+#    Key Exchange Keys (KEK).
+#
+#  * Key Exchange Keys:
+#     1) Microsoft Corporation KEK CA 2011
+#     2) Red Hat Secure Boot (PK/KEK key 1)/emailAddress=secalert@redhat.com
+#
+#  The first KEK is used to sign the revocation database obtained from:
+#  http://www.uefi.org/revocationlistfile. This allows you to use: dbxtool
+#  to periodically update your local copy of this blacklist. The second gives
+#  RedHat control over the dbx (Forbidden Signature) and db (Signature) databases.
+#  This essentially makes your computer trust RedHat and Microsoft signed binaries.
+#
+# * Signature database (db) keys:
+#  - Microsoft Windows Production PCA 2011 (for accepting Windows 8, Windows Server 2012 R2, etc boot loaders)
+#  - Microsoft Corporation UEFI CA 2011 (for verifying the shim binary, and PCI expansion ROMs).
+#
+# Further signing keys can be enrolled in the shim binary to allow execution of custom binaries.
+#
+# When a platform key is enrolled, the secure boot mode changes from "setup mode" to "user mode"
+# and secure boot is automatically enabled. Secure boot can only be disabled via the EFI setup
+# menu - this is accessed by pressing delete when the VM is started. It does not seem possible to
+# to control this setting via libvirt or by using a qemu command line option.
+#
+# TODO: Allow installation of custom keys
+
+- name: Gather os specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version}}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+      skip: true
+  tags: vars
+
+- name: Ensure ovmf generator checkout directory is owned by ansible_user
+  file:
+    path: "{{ libvirt_ovmf_vars_generator_checkout_path }}"
+    owner: "{{ ansible_user }}"
+    state: directory
+  become: true
+
+- name: Clone ovfm-vars generator
+  git:
+    repo: 'https://github.com/puiterwijk/qemu-ovmf-secureboot'
+    dest: "{{ libvirt_ovmf_vars_generator_checkout_path }}"
+    update: yes
+
+- name: Get checksum of template OVMF vars
+  # We need to keep the generated vars in sync with templated version.
+  # if the OVMF package is updated - we should update a new version with
+  # the signing keys enrolled.
+  stat:
+    path: "{{ libvirt_vm_ovmf_efi_variable_store_path }}"
+    get_checksum: true
+    checksum_algorithm: sha256
+  register: ovmf_template
+
+- name: Register destination of generated variables
+  set_fact:
+    ovmf_enrolled_variables_path: "\
+      {{ libvirt_ovmf_vars_generator_output_path }}/\
+      {{ libvirt_ovmf_vars_generator_output_prefix }}\
+      {{ ovmf_template.stat.checksum }}"
+
+- name: Register temporary path to output generated variables
+  # We don't want to run the generator with elevated privileges
+  # so use a temporary output before copying into place
+  set_fact:
+    ovmf_enrolled_variables_temp_output_path: "\
+      {{ libvirt_ovmf_vars_generator_checkout_path}}/\
+      {{ libvirt_ovmf_vars_generator_output_prefix }}\
+      {{ ovmf_template.stat.checksum }}"
+
+- name: Check to see if we have generated these vars before
+  stat:
+    path: "{{ ovmf_enrolled_variables_path }}"
+  register: generated_ovmf
+
+- name: Run OVMF vars generator
+  command: >
+    python {{ libvirt_ovmf_vars_generator_checkout_path}}/ovmf-vars-generator
+    --ovmf-binary {{ libvirt_vm_ovmf_efi_firmware_path }}
+    --uefi-shell-iso {{ libvirt_vm_ovmf_uefi_shell_iso_path }}
+    --ovmf-template-vars {{ libvirt_vm_ovmf_efi_variable_store_path }}
+    --qemu-binary {{ libvirt_vm_emulator }}
+    {% if libvirt_vm_engine == 'kvm' %}--enable-kvm{% endif %}
+    --skip-testing
+    --no-download
+    {{ ovmf_enrolled_variables_temp_output_path }}
+  when: not generated_ovmf.stat.exists
+
+- name: Ensure libvirt qemu can access the variable template
+  copy:
+    src: "{{ ovmf_enrolled_variables_temp_output_path }}"
+    dest: "{{ ovmf_enrolled_variables_path }}"
+    owner: "{{ libvirt_vm_qemu_user }}"
+    group: "{{ libvirt_vm_qemu_user }}"
+  become: true
+  when: not generated_ovmf.stat.exists

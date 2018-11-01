@@ -1,7 +1,16 @@
 ---
 
-# Who owns the serial console logs in console_log_path
-libvirt_vm_log_owner: libvirt-qemu
+# This controls ownership of files used by the libvirt qemu process,
+# e.g the serial console logs in console_log_path.
+libvirt_vm_qemu_user: libvirt-qemu
 
 # The environment passed to virt_volume.sh
 libvirt_vm_volume_creation_env: {}
+
+# Path to template OVMF efi variable store. A copy will be created
+# for each VM created.
+libvirt_vm_ovmf_efi_variable_store_path: /usr/share/OVMF/OVMF_VARS.fd
+
+# Path to OVMF efi firmware
+libvirt_vm_ovmf_efi_firmware_path: /usr/share/OVMF/OVMF_CODE.fd
+

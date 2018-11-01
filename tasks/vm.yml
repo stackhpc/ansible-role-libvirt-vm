@@ -9,12 +9,26 @@
       skip: true
   tags: vars
 
+- include_tasks: autodetect.yml
+  # We include this here as detection depends on the emulation features that
+  # are requested. We don't need to know the engine and emulator if we're
+  # not creating any newv VMs.
+  when: >-
+    (libvirt_vms | selectattr('state', 'defined')
+       | selectattr('state', 'equalto', 'absent') | list) != libvirt_vms
+
+- name: Set fact containing libvirt emulator
+  set_fact:
+    # The detected emulator may change between VM, but always prefer an explictly
+    # requested emulator
+    emulator: "{{ libvirt_vm_emulator | default(detected_libvirt_vm_emulator, true) }}"
+
 - name: Ensure the VM console log directory exists
   file:
     path: "{{ console_log_path | dirname }}"
     state: directory
-    owner: "{{ libvirt_vm_log_owner }}"
-    group: "{{ libvirt_vm_log_owner }}"
+    owner: "{{ libvirt_vm_qemu_user }}"
+    group: "{{ libvirt_vm_qemu_user }}"
     recurse: true
     mode: 0770
   when: console_log_enabled | bool
@@ -25,6 +39,26 @@
   vars:
     interface: "{{ item }}"
   with_items: "{{ interfaces }}"
+
+- name: Create secure boot template variables
+  include_tasks: prepare-secure-boot.yml
+  when:
+    - boot_firmware == "efi"
+    - enable_secure_boot
+    - libvirt_vm_ovmf_uefi_shell_iso_path is defined
+
+- name: Undefine libvirt machine if already defined
+  # Otherwise vm.xml.j2 will not be updated when variables are changed
+  #
+  # note(wszumski): the virt module does not seem to support
+  # removing vms with nvram defined - as a workaround, use the
+  # virsh cli directly. It may be better to detect if dumpxml
+  # actually contains an nvram element rather than relying on
+  # boot_firmware having the correct value.
+  command: virsh -c qemu:///system undefine{% if boot_firmware == 'efi' %} --nvram{% endif %} {{ vm.name }}
+  become: true
+  register: result
+  failed_when: result.rc != 0 and "no domain with matching name" not in result.stderr
 
 - name: Ensure the VM is defined
   virt:

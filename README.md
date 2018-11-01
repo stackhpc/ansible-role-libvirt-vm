@@ -91,6 +91,8 @@ Role Variables
 
     - `autostart`: Whether to start the VM when the host starts up. Default is
       `true`.
+      
+    - `boot_firmware`: Can be one of: `bios`, or `efi`. Defaults to `bios`.
 
 
 N.B. the following variables are deprecated: `libvirt_vm_state`,

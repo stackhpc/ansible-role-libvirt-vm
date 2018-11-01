@@ -1,9 +1,34 @@
 ---
 
-# Who owns the serial console logs in console_log_path
-libvirt_vm_log_owner: qemu
+# This controls ownership of files used by the libvirt qemu process,
+# e.g the serial console logs in console_log_path.
+libvirt_vm_qemu_user: qemu
 
 # The environment passed to virt_volume.sh
 libvirt_vm_volume_creation_env:
   VOLUME_GROUP: qemu
   VOLUME_OWNER: qemu
+
+# Path to template OVMF efi variable store. A copy will be created
+# for each VM created.
+# note(wszumski): official package path is /usr/share/OVMF/OVMF_VARS.fd
+libvirt_vm_ovmf_efi_variable_store_path: >-
+  {%- if enable_feature_smm -%}
+  /usr/share/edk2.git/ovmf-x64/OVMF_VARS-need-smm.fd
+  {%- else -%}
+  /usr/share/edk2.git/ovmf-x64/OVMF_VARS-pure-efi.fd
+  {%- endif -%}
+
+# Path to OVMF efi firmware
+# note(wszumski): official package path is /usr/share/OVMF/OVMF_CODE.secboot.fd
+libvirt_vm_ovmf_efi_firmware_path: >-
+  {%- if enable_feature_smm -%}
+  /usr/share/edk2.git/ovmf-x64/OVMF_CODE-need-smm.fd
+  {%- else -%}
+  /usr/share/edk2.git/ovmf-x64/OVMF_CODE-pure-efi.fd
+  {%- endif -%}
+
+# Path to iso containing signing keys
+# note(wszumski): official package path is /usr/share/OVMF/UefiShell.iso
+libvirt_vm_ovmf_uefi_shell_iso_path: /usr/share/edk2.git/ovmf-x64/UefiShell.iso
+
