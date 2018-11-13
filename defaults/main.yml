@@ -11,6 +11,11 @@ libvirt_volume_default_format: qcow2
 libvirt_volume_default_device: disk
 
 # Path to cache downloaded images.
+libvirt_vm_image_cache_path: "{{ libvirt_image_cache_path }}"
+
+# NOTE(mgoddard): Temporarily support this name in addition to
+# 'libvirt_vm_image_cache_path'.
+# TODO(mgoddard): Remove this for the next major release.
 libvirt_image_cache_path: "/tmp/"
 
 # CPU architecture.

@@ -16,7 +16,7 @@ Role Variables
   VM console logs, if a VM-specific log file path is not given. Default is
   "/var/log/libvirt/qemu/".
 
-- `libvirt_image_cache_path`: The directory in which to cache downloaded
+- `libvirt_vm_image_cache_path`: The directory in which to cache downloaded
   images. Default is "/tmp/".
 
 - `libvirt_vm_engine`: virtualisation engine. If not set, the role will attempt
