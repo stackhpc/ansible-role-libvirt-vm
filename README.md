@@ -27,6 +27,12 @@ Role Variables
 
 - `libvirt_vm_arch`: CPU architecture, default is `x86_64`.
 
+- `libvirt_vm_uri`: Override the libvirt connection URI. See the 
+  [libvirt docs](https://libvirt.org/remote.html) docs for more details.
+
+- `libvirt_vm_virsh_default_env`: Variables contained within this dictionary are
+  added to the environment used when executing virsh commands.
+
 - `libvirt_vms`: list of VMs to be created/destroyed. Each one may have the
   following attributes:
 
