@@ -5,6 +5,7 @@
   virt:
     name: "{{ vm.name }}"
     command: list_vms
+    uri: "{{ libvirt_vm_uri | default(omit, true) }}"
   register: result
   become: yes
 
@@ -13,11 +14,13 @@
       virt:
         name: "{{ vm.name }}"
         state: destroyed
+        uri: "{{ libvirt_vm_uri | default(omit, true) }}"
       become: yes
 
     - name: Ensure the VM is undefined
       virt:
         name: "{{ vm.name }}"
         command: undefine
+        uri: "{{ libvirt_vm_uri | default(omit, true) }}"
       become: yes
   when: vm.name in result.list_vms

@@ -31,6 +31,7 @@
     name: "{{ vm.name }}"
     command: define
     xml: "{{ lookup('template', 'vm.xml.j2') }}"
+    uri: "{{ libvirt_vm_uri | default(omit, true) }}"
   become: true
 
 - name: Ensure the VM is running and started at boot
@@ -38,4 +39,5 @@
     name: "{{ vm.name }}"
     autostart: "{{ autostart | bool }}"
     state: "{{ 'running' if (start | bool) else 'shutdown' }}"
+    uri: "{{ libvirt_vm_uri | default(omit, true) }}"
   become: true
