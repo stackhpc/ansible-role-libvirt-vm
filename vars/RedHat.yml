@@ -4,9 +4,9 @@
 libvirt_vm_log_owner: qemu
 
 # The environment passed to virt_volume.sh
-libvirt_vm_volume_creation_env_redhat:
+libvirt_vm_script_env_redhat:
   VOLUME_GROUP: qemu
   VOLUME_OWNER: qemu
 
-libvirt_vm_volume_creation_env: >-
-  {{ libvirt_vm_volume_creation_env_redhat | combine(libvirt_vm_virsh_default_env) }}
+libvirt_vm_script_env: >-
+  {{ libvirt_vm_script_env_redhat | combine(libvirt_vm_virsh_default_env) }}

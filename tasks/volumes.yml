@@ -24,7 +24,7 @@
     {{ libvirt_vm_image_cache_path }}/{{ item.image | basename }}
     {% endif %}
   with_items: "{{ volumes }}"
-  environment: "{{ libvirt_vm_volume_creation_env }}"
+  environment: "{{ libvirt_vm_script_env }}"
   register: volume_result
   changed_when:
     - volume_result is success
