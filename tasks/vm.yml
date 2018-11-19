@@ -1,14 +1,4 @@
 ---
-- name: Gather os specific variables
-  include_vars: "{{ item }}"
-  with_first_found:
-    - files:
-        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version}}.yml"
-        - "{{ ansible_distribution }}.yml"
-        - "{{ ansible_os_family }}.yml"
-      skip: true
-  tags: vars
-
 - name: Ensure the VM console log directory exists
   file:
     path: "{{ console_log_path | dirname }}"
@@ -31,6 +21,7 @@
     name: "{{ vm.name }}"
     command: define
     xml: "{{ lookup('template', 'vm.xml.j2') }}"
+    uri: "{{ libvirt_vm_uri | default(omit, true) }}"
   become: true
 
 - name: Ensure the VM is running and started at boot
@@ -38,4 +29,5 @@
     name: "{{ vm.name }}"
     autostart: "{{ autostart | bool }}"
     state: "{{ 'running' if (start | bool) else 'shutdown' }}"
+    uri: "{{ libvirt_vm_uri | default(omit, true) }}"
   become: true

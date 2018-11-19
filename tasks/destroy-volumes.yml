@@ -6,6 +6,7 @@
     {{ item.pool }}
   with_items: "{{ volumes }}"
   register: volume_result
+  environment: "{{ libvirt_vm_script_env }}"
   changed_when:
     - volume_result is success
     - (volume_result.stdout | from_json).changed | default(True)

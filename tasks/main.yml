@@ -1,4 +1,13 @@
 ---
+- name: Gather os specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version}}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+  tags: vars
+
 - include_tasks: autodetect.yml
   # We don't need to know the engine and emulator if we're not creating any new
   # VMs.
