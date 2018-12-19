@@ -20,11 +20,6 @@
 # Parse options
 OPTIND=1
 
-if [[ $# -gt 4 ]] && [[ $# -lt 6 ]]; then
-    echo "Usage: $0 -n <name> -p <pool> -c <capacity> -f <format> [-i <source image> | -b <backing image>]"
-    exit 1
-fi
-
 while getopts ":n:p:c:f:i:b:" opt; do
     case ${opt} in
         n) NAME=$OPTARG;;
@@ -44,10 +39,20 @@ while getopts ":n:p:c:f:i:b:" opt; do
     esac
 done
 
+# Check options
+if ! [[ -n $NAME && -n $POOL && -n $CAPACITY ]]; then
+    echo "Missing manditory options"  >&2
+    echo "Usage: $0 -n <name> -p <pool> -c <capacity> [-f <format>] [-i <source image> | -b <backing image>]"
+    exit 1
+fi
 if [[ -n $IMAGE && -n $BACKING_IMAGE ]]; then
-  echo "Options -i and -b are mutually exclusive." >&2
+  echo "Options -i and -b are mutually exclusive" >&2
   exit 1
 fi
+if [[ -z "$FORMAT" ]]; then
+    FORMAT='qcow2'
+fi
+
 
 # Check whether a volume with this name exists.
 output=$(virsh vol-info --pool "$POOL" --vol "$NAME" 2>&1)
@@ -63,7 +68,7 @@ fi
 
 # Create the volume.
 if [[ -n $BACKING_IMAGE ]]; then
-    if [[ "$FORMAT" -ne "qcow2" ]]; then
+    if [[ "$FORMAT" != 'qcow2' ]]; then
         echo "qcow2 format assumed for backing images, but $FORMAT format was supplied."
         exit 1
     fi
@@ -93,6 +98,8 @@ fi
 # these environmental variables are defined. Without doing this libvirt
 # cannot access the volume on RedHat based GNU/Linux distributions.
 if [[ -z "$VOLUME_OWNER" || -z "$VOLUME_GROUP" ]]; then
+    # Avoid attempting to change permissions on volumes that are not file or
+    # directory based
     if [[ -f "$output" || -d "$output" ]]; then
         existing_owner="$(stat --format '%U' "$output")"
         existing_group="$(stat --format '%G' "$output")"
