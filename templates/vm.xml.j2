@@ -22,7 +22,7 @@
     <disk type='volume' device='{{ volume.device | default(libvirt_volume_default_device) }}'>
       <driver name='qemu' type='{{ volume.format | default(libvirt_volume_default_format) }}'/>
       <source pool='{{ volume.pool }}' volume='{{ volume.name }}'/>
-      <target dev='vd{{ 'abcdefghijklmnopqrstuvwxyz'[loop.index] }}'/>
+      <target dev='vd{{ 'abcdefghijklmnopqrstuvwxyz'[loop.index - 1] }}'/>
     </disk>
 {% endfor %}
 {% for interface in interfaces %}

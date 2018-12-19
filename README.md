@@ -27,7 +27,7 @@ Role Variables
 
 - `libvirt_vm_arch`: CPU architecture, default is `x86_64`.
 
-- `libvirt_vm_uri`: Override the libvirt connection URI. See the 
+- `libvirt_vm_uri`: Override the libvirt connection URI. See the
   [libvirt docs](https://libvirt.org/remote.html) docs for more details.
 
 - `libvirt_vm_virsh_default_env`: Variables contained within this dictionary are
@@ -100,6 +100,7 @@ Role Variables
     - `autostart`: Whether to start the VM when the host starts up. Default is
       `true`.
 
+    - `xml_template`: Optionally supply a modified XML template. Base customisation off the default `vm.xml.j2` template so as to include the expected jinja expressions the role uses.
 
 N.B. the following variables are deprecated: `libvirt_vm_state`,
 `libvirt_vm_name`, `libvirt_vm_memory_mb`, `libvirt_vm_vcpus`,
