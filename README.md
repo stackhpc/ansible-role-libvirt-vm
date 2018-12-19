@@ -53,14 +53,16 @@ Role Variables
 
     - `volumes`: a list of volumes to attach to the VM.  Each volume is
       defined with the following dict:
+        - `pool`: Name or UUID of the storage pool from which the volume should be
+          allocated.
         - `name`: Name to associate with the volume being created.
+        - `capacity`: volume capacity (can be suffixed with M,G,T or MB,GB,TB, etc)
         - `device`: `disk`
         - `format`: options include `raw`, `qcow2`, `vmdk`.  See `man virsh` for the
           full range.  Default is `qcow2`
-        - `capacity`: volume capacity (can be suffixed with M,G,T or MB,GB,TB, etc)
-        - `image`: (optional) a URL to an image with which the volume is initalised.
-        - `pool`: Name or UUID of the storage pool from which the volume should be
-          allocated.
+        - `image`: (optional) a URL to an image with which the volume is initalised (full copy).
+        - `backing_image`: (optional) name of the backing volume which is assumed to already be the same pool (copy-on-write).
+        - `image` and `backing_image` are mutually exclusive options.
 
     - `interfaces`: a list of network interfaces to attach to the VM.
       Each network interface is defined with the following dict:

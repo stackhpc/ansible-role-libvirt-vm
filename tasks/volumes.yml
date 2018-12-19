@@ -16,12 +16,14 @@
 - name: Ensure the VM volumes exist
   script: >
     virt_volume.sh
-    {{ item.name }}
-    {{ item.pool }}
-    {{ item.capacity }}
-    {{ item.format | default(libvirt_volume_default_format) }}
+    -n {{ item.name }}
+    -p {{ item.pool }}
+    -c {{ item.capacity }}
+    -f {{ item.format | default(libvirt_volume_default_format) }}
     {% if item.image is defined %}
-    {{ libvirt_vm_image_cache_path }}/{{ item.image | basename }}
+    -i {{ libvirt_vm_image_cache_path }}/{{ item.image | basename }}
+    {% elif item.backing_image is defined %}
+    -b {{ item.backing_image }}
     {% endif %}
   with_items: "{{ volumes }}"
   environment: "{{ libvirt_vm_script_env }}"

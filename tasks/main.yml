@@ -40,15 +40,15 @@
     loop_var: vm
   when: (vm.state | default('present', true)) == 'present'
 
-- include_tasks: destroy-volumes.yml
-  vars:
-    volumes: "{{ vm.volumes | default([], true) }}"
+- include_tasks: destroy-vm.yml
   with_items: "{{ libvirt_vms }}"
   loop_control:
     loop_var: vm
   when: (vm.state | default('present', true)) == 'absent'
 
-- include_tasks: destroy-vm.yml
+- include_tasks: destroy-volumes.yml
+  vars:
+    volumes: "{{ vm.volumes | default([], true) }}"
   with_items: "{{ libvirt_vms }}"
   loop_control:
     loop_var: vm

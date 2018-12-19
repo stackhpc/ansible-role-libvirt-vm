@@ -17,32 +17,62 @@
 # Ensure that a libvirt volume exists, optionally uploading an image.
 # On success, output a JSON object with a 'changed' item.
 
-if [[ $# -ne 4 ]] && [[ $# -ne 5 ]]; then
-    echo "Usage: $0 <name> <pool> <capacity> <format> [<image>]"
+# Parse options
+OPTIND=1
+
+if [[ $# -gt 4 ]] && [[ $# -lt 6 ]]; then
+    echo "Usage: $0 -n <name> -p <pool> -c <capacity> -f <format> [-i <source image> | -b <backing image>]"
     exit 1
 fi
 
-NAME=$1
-POOL=$2
-CAPACITY=$3
-FORMAT=$4
-IMAGE=$5
+while getopts ":n:p:c:f:i:b:" opt; do
+    case ${opt} in
+        n) NAME=$OPTARG;;
+        p) POOL=$OPTARG;;
+        c) CAPACITY=$OPTARG;;
+        f) FORMAT=$OPTARG;;
+        i) IMAGE=$OPTARG;;
+        b) BACKING_IMAGE=$OPTARG;;
+        \?)
+            echo "Invalid option: -$OPTARG" >&2
+            exit 1
+            ;;
+        :)
+            echo "Option -$OPTARG requires an argument." >&2
+            exit 1
+            ;;
+    esac
+done
+
+if [[ -n $IMAGE && -n $BACKING_IMAGE ]]; then
+  echo "Options -i and -b are mutually exclusive." >&2
+  exit 1
+fi
 
 # Check whether a volume with this name exists.
-output=$(virsh vol-info --pool $POOL --vol $NAME 2>&1)
+output=$(virsh vol-info --pool "$POOL" --vol "$NAME" 2>&1)
 result=$?
 if [[ $result -eq 0 ]]; then
     echo '{"changed": false}'
     exit 0
 elif ! echo "$output" | grep 'Storage volume not found' >/dev/null 2>&1; then
-    echo "Unexpected error while getting volume info"
+    echo "Unexpected error while getting volume info" >&2
     echo "$output"
     exit $result
 fi
 
 # Create the volume.
-output=$(virsh vol-create-as --pool $POOL --name $NAME --capacity $CAPACITY --format $FORMAT 2>&1)
-result=$?
+if [[ -n $BACKING_IMAGE ]]; then
+    if [[ "$FORMAT" -ne "qcow2" ]]; then
+        echo "qcow2 format assumed for backing images, but $FORMAT format was supplied."
+        exit 1
+    fi
+    output=$(virsh vol-create-as --pool "$POOL" --name "$NAME" --capacity "$CAPACITY" --format "$FORMAT" --backing-vol "$BACKING_IMAGE" --backing-vol-format "$FORMAT" 2>&1)
+    result=$?
+else
+    output=$(virsh vol-create-as --pool "$POOL" --name "$NAME" --capacity "$CAPACITY" --format "$FORMAT" 2>&1)
+    result=$?
+fi
 if [[ $result -ne 0 ]]; then
     echo "Failed to create volume"
     echo "$output"
@@ -50,49 +80,56 @@ if [[ $result -ne 0 ]]; then
 fi
 
 # Determine the path to the volume file.
-output=$(virsh vol-key --pool $POOL --vol $NAME 2>&1)
+output=$(virsh vol-key --pool "$POOL" --vol "$NAME" 2>&1)
 result=$?
 if [[ $result -ne 0 ]]; then
     echo "Failed to get volume file path"
     echo "$output"
-    virsh vol-delete --pool $POOL --vol $NAME
+    virsh vol-delete --pool "$POOL" --vol "$NAME"
     exit $result
 fi
 
 # Change the ownership of the volume to VOLUME_OWNER:VOLUME_GROUP if
 # these environmental variables are defined. Without doing this libvirt
 # cannot access the volume on RedHat based GNU/Linux distributions.
-existing_owner="$(stat --format '%U' "$output")"
-existing_group="$(stat --format '%G' "$output")"
-new_owner="${VOLUME_OWNER:-$existing_owner}"
-new_group="${VOLUME_GROUP:-$existing_group}"
-output=$(chown "$new_owner":"$new_group" $output 2>1)
-result=$?
-if [[ $result -ne 0 ]]; then
-    echo "Failed to change ownership of the volume to $new_owner:$new_group"
-    echo "$output"
-    virsh vol-delete --pool $POOL --vol $NAME
-    exit $result
+if [[ -z "$VOLUME_OWNER" || -z "$VOLUME_GROUP" ]]; then
+    if [[ -f "$output" || -d "$output" ]]; then
+        existing_owner="$(stat --format '%U' "$output")"
+        existing_group="$(stat --format '%G' "$output")"
+        new_owner="${VOLUME_OWNER:-$existing_owner}"
+        new_group="${VOLUME_GROUP:-$existing_group}"
+        output=$(chown "$new_owner":"$new_group" "$output" 2>1)
+        result=$?
+        if [[ $result -ne 0 ]]; then
+            echo "Failed to change ownership of the volume to $new_owner:$new_group"
+            echo "$output"
+            virsh vol-delete --pool "$POOL" --vol "$NAME"
+            exit $result
+        fi
+    else
+        echo "Setting ownership on volumes not backed by a file or directory is not supported"
+        exit 1
+    fi
 fi
 
 if [[ -n $IMAGE ]]; then
     # Upload an image to the volume.
-    output=$(virsh vol-upload --pool $POOL --vol $NAME --file $IMAGE 2>&1)
+    output=$(virsh vol-upload --pool "$POOL" --vol "$NAME" --file "$IMAGE" 2>&1)
     result=$?
     if [[ $result -ne 0 ]]; then
         echo "Failed to upload image $IMAGE to volume $NAME"
         echo "$output"
-        virsh vol-delete --pool $POOL --vol $NAME
+        virsh vol-delete --pool "$POOL" --vol "$NAME"
         exit $result
     fi
 
     # Resize the volume to the requested capacity.
-    output=$(virsh vol-resize --pool $POOL --vol $NAME --capacity $CAPACITY 2>&1)
+    output=$(virsh vol-resize --pool "$POOL" --vol "$NAME" --capacity "$CAPACITY" 2>&1)
     result=$?
     if [[ $result -ne 0 ]]; then
         echo "Failed to resize volume $VOLUME to $CAPACITY"
         echo "$output"
-        virsh vol-delete --pool $POOL --vol $NAME
+        virsh vol-delete --pool "$POOL" --vol "$NAME"
         exit $result
     fi
 fi
