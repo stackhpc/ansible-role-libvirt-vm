@@ -97,25 +97,20 @@ fi
 # Change the ownership of the volume to VOLUME_OWNER:VOLUME_GROUP if
 # these environmental variables are defined. Without doing this libvirt
 # cannot access the volume on RedHat based GNU/Linux distributions.
-if [[ -z "$VOLUME_OWNER" || -z "$VOLUME_GROUP" ]]; then
-    # Avoid attempting to change permissions on volumes that are not file or
-    # directory based
-    if [[ -f "$output" || -d "$output" ]]; then
-        existing_owner="$(stat --format '%U' "$output")"
-        existing_group="$(stat --format '%G' "$output")"
-        new_owner="${VOLUME_OWNER:-$existing_owner}"
-        new_group="${VOLUME_GROUP:-$existing_group}"
-        output=$(chown "$new_owner":"$new_group" "$output" 2>1)
-        result=$?
-        if [[ $result -ne 0 ]]; then
-            echo "Failed to change ownership of the volume to $new_owner:$new_group"
-            echo "$output"
-            virsh vol-delete --pool "$POOL" --vol "$NAME"
-            exit $result
-        fi
-    else
-        echo "Setting ownership on volumes not backed by a file or directory is not supported"
-        exit 1
+# Avoid attempting to change permissions on volumes that are not file or
+# directory based
+if [[ -f "$output" || -d "$output" ]]; then
+    existing_owner="$(stat --format '%U' "$output")"
+    existing_group="$(stat --format '%G' "$output")"
+    new_owner="${VOLUME_OWNER:-$existing_owner}"
+    new_group="${VOLUME_GROUP:-$existing_group}"
+    output=$(chown "$new_owner":"$new_group" "$output" 2>1)
+    result=$?
+    if [[ $result -ne 0 ]]; then
+        echo "Failed to change ownership of the volume to $new_owner:$new_group"
+        echo "$output"
+        virsh vol-delete --pool "$POOL" --vol "$NAME"
+        exit $result
     fi
 fi
 
