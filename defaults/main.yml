@@ -61,10 +61,13 @@ libvirt_vms:
       # Path to console log file.
       console_log_path: "{{ libvirt_vm_console_log_path }}"
 
+      # XML template file to source domain definition
+      xml_file: vm.xml.j2
+      
 # Variables to add to the enviroment that is used to execute virsh commands
 libvirt_vm_virsh_default_env: "{{  { 'LIBVIRT_DEFAULT_URI': libvirt_vm_uri } if libvirt_vm_uri else {} }}"
 
-# Override for the libvirt connection uri. Leave unset to use the default. 
+# Override for the libvirt connection uri. Leave unset to use the default.
 libvirt_vm_uri: ""
 
 ### DEPRECATED ###
