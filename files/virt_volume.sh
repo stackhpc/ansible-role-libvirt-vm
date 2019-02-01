@@ -125,14 +125,18 @@ if [[ -n $IMAGE ]]; then
         exit $result
     fi
 
-    # Resize the volume to the requested capacity.
-    output=$(virsh vol-resize --pool "$POOL" --vol "$NAME" --capacity "$CAPACITY" 2>&1)
-    result=$?
-    if [[ $result -ne 0 ]]; then
-        echo "Failed to resize volume $VOLUME to $CAPACITY"
-        echo "$output"
-        virsh vol-delete --pool "$POOL" --vol "$NAME"
-        exit $result
+    # Resize the volume to the requested capacity. Attempting to resize a raw volume
+    # to the same capacity will result in failure, see:
+    # https://github.com/stackhpc/ansible-role-libvirt-vm/issues/23
+    if [ "${FORMAT,,}" != "raw" ]; then
+      output=$(virsh vol-resize --pool "$POOL" --vol "$NAME" --capacity "$CAPACITY" 2>&1)
+      result=$?
+      if [[ $result -ne 0 ]]; then
+          echo "Failed to resize volume $VOLUME to $CAPACITY"
+          echo "$output"
+          virsh vol-delete --pool "$POOL" --vol "$NAME"
+          exit $result
+      fi
     fi
 fi
 
