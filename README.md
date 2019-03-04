@@ -100,7 +100,9 @@ Role Variables
     - `autostart`: Whether to start the VM when the host starts up. Default is
       `true`.
 
-    - `xml_template`: Optionally supply a modified XML template. Base customisation off the default `vm.xml.j2` template so as to include the expected jinja expressions the role uses.
+    - `xml_file`: Optionally supply a modified XML template. Base customisation
+      off the default `vm.xml.j2` template so as to include the expected jinja
+      expressions the role uses.
 
 N.B. the following variables are deprecated: `libvirt_vm_state`,
 `libvirt_vm_name`, `libvirt_vm_memory_mb`, `libvirt_vm_vcpus`,
