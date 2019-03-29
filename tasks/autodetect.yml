@@ -26,7 +26,7 @@
           {%- else -%}
           qemu
           {%- endif -%}
-  when: libvirt_vm_engine is none
+  when: libvirt_vm_engine is none or libvirt_vm_engine | length == 0
 
 - name: Detect the virtualisation emulator
   block:
@@ -62,4 +62,4 @@
       fail:
         msg: Unable to detect emulator for engine {{ libvirt_vm_engine }}.
       when: libvirt_vm_emulator is none
-  when: libvirt_vm_emulator is none
+  when: libvirt_vm_emulator is none or libvirt_vm_emulator | length == 0
