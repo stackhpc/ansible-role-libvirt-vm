@@ -104,7 +104,7 @@ if [[ -f "$output" || -d "$output" ]]; then
     existing_group="$(stat --format '%G' "$output")"
     new_owner="${VOLUME_OWNER:-$existing_owner}"
     new_group="${VOLUME_GROUP:-$existing_group}"
-    output=$(chown "$new_owner":"$new_group" "$output" 2>1)
+    output=$(chown "$new_owner":"$new_group" "$output" 2>&1)
     result=$?
     if [[ $result -ne 0 ]]; then
         echo "Failed to change ownership of the volume to $new_owner:$new_group"
