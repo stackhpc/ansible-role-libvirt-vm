@@ -115,7 +115,8 @@ these deprecated variables.
 Dependencies
 ------------
 
-None
+If using qcow2 format drives qemu-img (in qemu-utils package) is required.
+
 
 Example Playbook
 ----------------
