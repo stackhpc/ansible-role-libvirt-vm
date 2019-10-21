@@ -25,6 +25,9 @@ Role Variables
 - `libvirt_vm_emulator`: path to emulator binary. If not set, the role will
   attempt to auto-detect the correct emulator to use.
 
+- `libvirt_cpu_mode_default`: The default CPU mode if `libvirt_cpu_mode` or
+  `vm.cpu_mode` is undefined.
+
 - `libvirt_vm_arch`: CPU architecture, default is `x86_64`.
 
 - `libvirt_vm_uri`: Override the libvirt connection URI. See the
@@ -49,7 +52,8 @@ Role Variables
       `libvirt_vm_engine` is `kvm`, otherwise `pc-1.0`.
 
     - `cpu_mode`: Virtual machine CPU mode. Default is `host-passthrough` if
-      `libvirt_vm_engine` is `kvm`, otherwise `host-model`.
+      `libvirt_vm_engine` is `kvm`, otherwise `host-model`. Can be set to none
+      to not configure a cpu mode.
 
     - `volumes`: a list of volumes to attach to the VM.  Each volume is
       defined with the following dict:

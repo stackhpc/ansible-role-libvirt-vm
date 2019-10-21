@@ -50,7 +50,7 @@ libvirt_vms:
       machine: "{{ libvirt_vm_machine }}"
 
       # Virtual machine CPU mode.
-      cpu_mode: "{{ libvirt_vm_cpu_mode }}"
+      cpu_mode: "{{ libvirt_vm_cpu_mode | default(libvirt_cpu_mode_default, true) }}"
 
       # List of volumes.
       volumes: "{{ libvirt_vm_volumes }}"
@@ -69,6 +69,9 @@ libvirt_vm_virsh_default_env: "{{  { 'LIBVIRT_DEFAULT_URI': libvirt_vm_uri } if 
 
 # Override for the libvirt connection uri. Leave unset to use the default.
 libvirt_vm_uri: ""
+
+# Default CPU mode if libvirt_vm_cpu_mode or vm.cpu_mode is undefined
+libvirt_cpu_mode_default: "{{ 'host-passthrough' if libvirt_vm_engine == 'kvm' else 'host-model' }}"
 
 ### DEPRECATED ###
 # Use the above settings for each item within `libvirt_vms`, instead of the

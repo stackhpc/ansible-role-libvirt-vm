@@ -13,9 +13,11 @@
     <boot dev='network'/>
     <bios useserial='yes'/>
   </os>
-  <cpu{% if cpu_mode is not none %} mode='{{ cpu_mode }}'{% endif %}>
+  {% if cpu_mode %}
+  <cpu mode='{{ cpu_mode }}'>
     <model fallback='allow'/>
   </cpu>
+  {% endif %}
   <devices>
     <emulator>{{ libvirt_vm_emulator }}</emulator>
 {% for volume in volumes %}
