@@ -36,10 +36,15 @@
 {% if interface.type is defined and interface.type == 'direct' %}
     <interface type='direct'>
       <source dev='{{ interface.source.dev }}' mode='{{ interface.source.mode | default('vepa') }}'/>
-{% else %}
+{% elif interface.type is defined and interface.type == 'bridge' %}
+    <interface type='bridge'>
+      <source bridge='{{ interface.source.dev }}'/>
+{% elif interface.type is not defined or interface.type == 'network' %}
     <interface type='network'>
       <source network='{{ interface.network }}'/>
 {% endif %}
+      {# if the network configuration is invalid this can still appear in the xml #}
+      {# (say you enter 'bond' instead of 'bridge in your variables) #}
       <model type='virtio'/>
     </interface>
 {% endfor %}
