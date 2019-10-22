@@ -154,6 +154,9 @@ Example Playbook
                   format: 'qcow2'
                   capacity: '200GB'
                   pool: 'my-pool'
+                - name: 'filestore'
+                  type: 'file'
+                  capacity: '900GB'
               interfaces:
                 - type: 'direct'
                   source:
