@@ -13,6 +13,11 @@
     <boot dev='network'/>
     <bios useserial='yes'/>
   </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <pae/>
+  </features>
   {% if cpu_mode %}
   <cpu mode='{{ cpu_mode }}'>
     <model fallback='allow'/>
