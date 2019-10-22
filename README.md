@@ -155,7 +155,13 @@ Example Playbook
                   capacity: '200GB'
                   pool: 'my-pool'
               interfaces:
-                - network: 'br-datacentre'
+                - type: 'direct'
+                  source:
+                    dev: 'eth123'
+                    mode: 'private'
+                - type: 'bridge'
+                  source:
+                    dev: 'br-datacentre'
 
 
 Author Information
