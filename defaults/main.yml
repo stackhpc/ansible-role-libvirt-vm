@@ -55,6 +55,9 @@ libvirt_vms:
       # List of volumes.
       volumes: "{{ libvirt_vm_volumes }}"
 
+      # What time should the clock be synced to on boot (utc/localtime/timezone/variable)
+      clock_offset: "localtime"
+
       # List of network interfaces.
       interfaces: "{{ libvirt_vm_interfaces }}"
 
