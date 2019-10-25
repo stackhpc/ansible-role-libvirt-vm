@@ -26,6 +26,7 @@
     -b {{ item.backing_image }}
     {% endif %}
   with_items: "{{ volumes }}"
+  when: "{{ item.device == 'disk' }}"
   environment: "{{ libvirt_vm_script_env }}"
   register: volume_result
   changed_when:

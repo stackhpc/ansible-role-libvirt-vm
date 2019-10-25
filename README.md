@@ -60,8 +60,8 @@ Role Variables
         - `pool`: Name or UUID of the storage pool from which the volume should be
           allocated.
         - `name`: Name to associate with the volume being created.
-        - `capacity`: volume capacity (can be suffixed with M,G,T or MB,GB,TB, etc)
-        - `device`: `disk`
+        - `device`: `disk` or `cdrom`
+        - `capacity`: volume capacity (can be suffixed with M,G,T or MB,GB,TB, etc) (required when type is `disk`)
         - `format`: options include `raw`, `qcow2`, `vmdk`.  See `man virsh` for the
           full range.  Default is `qcow2`
         - `image`: (optional) a URL to an image with which the volume is initalised (full copy).
