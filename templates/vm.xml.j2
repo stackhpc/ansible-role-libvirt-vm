@@ -51,7 +51,7 @@
     <interface type='network'>
       <source network='{{ interface.network }}'/>
 {% endif %}
-      {% if interface.mac %}
+      {% if interface.mac is defined %}
       <mac address='{{ interface.mac }}'/>
       {% endif %}
       {# if the network configuration is invalid this can still appear in the xml #}
