@@ -67,8 +67,8 @@ Role Variables
       defined with the following dict:
         - `pool`: Name or UUID of the storage pool from which the volume should be
           allocated.
-        - `name`: Name to associate with the volume being created; include extension if you would like images created with one.
-        - `file_path`: Where the storage file should be placed under; defaults to `libvirt_volume_default_images_path`
+        - `name`: Name to associate with the volume being created; For `file` type volumes include extension if you would like volumes created with one.
+        - `file_path`: Where the image of `file` type volumes should be placed; defaults to `libvirt_volume_default_images_path`
         - `capacity`: volume capacity (can be suffixed with M,G,T or MB,GB,TB, etc)
         - `device`: `disk`
         - `format`: options include `raw`, `qcow2`, `vmdk`.  See `man virsh` for the
