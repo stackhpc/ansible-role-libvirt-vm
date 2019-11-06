@@ -60,6 +60,9 @@ Role Variables
 
     - `clock_offset`: Overrides default set in `libvirt_vm_clock_offset`
 
+    - `enable_vnc`: If true enables VNC listening on localhost for use with
+      VirtManager and similar tools
+
     - `volumes`: a list of volumes to attach to the VM.  Each volume is
       defined with the following dict:
         - `pool`: Name or UUID of the storage pool from which the volume should be
