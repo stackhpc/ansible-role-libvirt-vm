@@ -81,6 +81,7 @@ Role Variables
         - `network`: Name of the network to which an interface should be
           attached. Must be specified if and only if the interface `type` is
           `network`.
+        - `mac`: "Hardware" address of the virtual instance, if absent one is created
         - `source`: A dict defining the host interface to which this
           VM interface should be attached. Must be specified if and only if the
           interface `type` is `direct`. Includes the following attributes:
