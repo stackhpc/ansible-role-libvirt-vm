@@ -1,0 +1,5 @@
+---
+- project:
+    third-party-check:
+      jobs:
+        - tenks-deploy-teardown-centos
