@@ -19,6 +19,16 @@ Role Variables
 - `libvirt_vm_image_cache_path`: The directory in which to cache downloaded
   images. Default is "/tmp/".
 
+- `libvirt_volume_default_images_path`: Directory in which instance images are
+  stored. Default is '/var/lib/libvirt/images'.
+
+- `libvirt_volume_default_type`: What type of backing volume does the instance use? Default is `volume`.
+
+- `libvirt_volume_default_format`: Format for volumes created by the role, Default is `qcow2`.
+
+- `libvirt_volume_default_device`: Control how device appears in guest OS. Defaults to `disk`.
+
+
 - `libvirt_vm_engine`: virtualisation engine. If not set, the role will attempt
   to auto-detect the optimal engine to use.
 
