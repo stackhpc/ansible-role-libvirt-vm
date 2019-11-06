@@ -35,6 +35,11 @@ libvirt_vm_engine:
 # correct emulator to use.
 libvirt_vm_emulator:
 
+# Default value for clock syncing. The default (false) uses <clock sync="localtime">
+# to configure the instances clock synchronisation. Change to a timezone to make
+# configuration use <clock offset="specified offset">
+libvirt_vm_clock_offset: False
+
 # A list of specifications of VMs to be created.
 # For backwards compatibility, libvirt_vms defaults to a singleton list using
 # the values of the deprecated variables below.

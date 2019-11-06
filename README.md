@@ -36,6 +36,9 @@ Role Variables
 - `libvirt_vm_virsh_default_env`: Variables contained within this dictionary are
   added to the environment used when executing virsh commands.
 
+- `libvirt_vm_clock_offset`. If defined the instances clock offset is set to
+  the provided value. When undefined sync is set to `localtime`.
+
 - `libvirt_vms`: list of VMs to be created/destroyed. Each one may have the
   following attributes:
 
@@ -54,6 +57,8 @@ Role Variables
     - `cpu_mode`: Virtual machine CPU mode. Default is `host-passthrough` if
       `libvirt_vm_engine` is `kvm`, otherwise `host-model`. Can be set to none
       to not configure a cpu mode.
+
+    - `clock_offset`: Overrides default set in `libvirt_vm_clock_offset`
 
     - `volumes`: a list of volumes to attach to the VM.  Each volume is
       defined with the following dict:

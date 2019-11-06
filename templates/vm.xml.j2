@@ -2,7 +2,11 @@
   <name>{{ vm.name }}</name>
   <memory>{{ vm.memory_mb | int * 1024 }}</memory>
   <vcpu>{{ vm.vcpus }}</vcpu>
+  {% if vm.clock_offset |default({{ libvirt_vm_clock_offset }}) %}
   <clock offset="{{ vm.clock_offset }}"/>
+  {% else %}
+  <clock sync="localtime"/>
+  {% endif %}
   <on_poweroff>destroy</on_poweroff>
   <on_reboot>restart</on_reboot>
   <on_crash>destroy</on_crash>
