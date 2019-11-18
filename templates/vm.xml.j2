@@ -55,7 +55,7 @@
       <mac address='{{ interface.mac }}'/>
       {% endif %}
       {# if the network configuration is invalid this can still appear in the xml #}
-      {# (say you enter 'bond' instead of 'bridge in your variables) #}
+      {# (say you enter 'bond' instead of 'bridge' in your variables) #}
       <model type='virtio'/>
     </interface>
 {% endfor %}
