@@ -19,6 +19,16 @@ Role Variables
 - `libvirt_vm_image_cache_path`: The directory in which to cache downloaded
   images. Default is "/tmp/".
 
+- `libvirt_volume_default_images_path`: Directory in which instance images are
+  stored. Default is '/var/lib/libvirt/images'.
+
+- `libvirt_volume_default_type`: What type of backing volume does the instance use? Default is `volume`.
+
+- `libvirt_volume_default_format`: Format for volumes created by the role, Default is `qcow2`.
+
+- `libvirt_volume_default_device`: Control how device appears in guest OS. Defaults to `disk`.
+
+
 - `libvirt_vm_engine`: virtualisation engine. If not set, the role will attempt
   to auto-detect the optimal engine to use.
 
@@ -35,6 +45,9 @@ Role Variables
 
 - `libvirt_vm_virsh_default_env`: Variables contained within this dictionary are
   added to the environment used when executing virsh commands.
+
+- `libvirt_vm_clock_offset`. If defined the instances clock offset is set to
+  the provided value. When undefined sync is set to `localtime`.
 
 - `libvirt_vms`: list of VMs to be created/destroyed. Each one may have the
   following attributes:
@@ -55,11 +68,17 @@ Role Variables
       `libvirt_vm_engine` is `kvm`, otherwise `host-model`. Can be set to none
       to not configure a cpu mode.
 
+    - `clock_offset`: Overrides default set in `libvirt_vm_clock_offset`
+
+    - `enable_vnc`: If true enables VNC listening on localhost for use with
+      VirtManager and similar tools
+
     - `volumes`: a list of volumes to attach to the VM.  Each volume is
       defined with the following dict:
         - `pool`: Name or UUID of the storage pool from which the volume should be
           allocated.
-        - `name`: Name to associate with the volume being created.
+        - `name`: Name to associate with the volume being created; For `file` type volumes include extension if you would like volumes created with one.
+        - `file_path`: Where the image of `file` type volumes should be placed; defaults to `libvirt_volume_default_images_path`
         - `device`: `disk` or `cdrom`
         - `capacity`: volume capacity (can be suffixed with M,G,T or MB,GB,TB, etc) (required when type is `disk`)
         - `format`: options include `raw`, `qcow2`, `vmdk`.  See `man virsh` for the
@@ -80,6 +99,7 @@ Role Variables
         - `network`: Name of the network to which an interface should be
           attached. Must be specified if and only if the interface `type` is
           `network`.
+        - `mac`: "Hardware" address of the virtual instance, if absent one is created
         - `source`: A dict defining the host interface to which this
           VM interface should be attached. Must be specified if and only if the
           interface `type` is `direct`. Includes the following attributes:
@@ -154,8 +174,18 @@ Example Playbook
                   format: 'qcow2'
                   capacity: '200GB'
                   pool: 'my-pool'
+                - name: 'filestore'
+                  type: 'file'
+                  file_path: '/srv/cloud/images'
+                  capacity: '900GB'
               interfaces:
-                - network: 'br-datacentre'
+                - type: 'direct'
+                  source:
+                    dev: 'eth123'
+                    mode: 'private'
+                - type: 'bridge'
+                  source:
+                    dev: 'br-datacentre'
 
 
 Author Information
