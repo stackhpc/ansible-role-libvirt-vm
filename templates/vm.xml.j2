@@ -30,9 +30,9 @@
   <devices>
     <emulator>{{ libvirt_vm_emulator }}</emulator>
 {% for volume in volumes %}
-    <disk type='{{ volume.type |default(libvirt_volume_default_type) }}' device='{{ volume.device | default(libvirt_volume_default_device) }}'>
+    <disk type='{{ volume.type | default(libvirt_volume_default_type) }}' device='{{ volume.device | default(libvirt_volume_default_device) }}'>
       <driver name='qemu' type='{{ volume.format | default(libvirt_volume_default_format) }}'/>
-      {% if volume.type is defined and volume.type == 'file' %}
+      {% if volume.type | default(libvirt_volume_default_type) == 'file' %}
       <source file='{{ volume.file_path |default(libvirt_volume_default_images_path) }}/{{ volume.name}}'/>
       {% else %}
       <source pool='{{ volume.pool }}' volume='{{ volume.name }}'/>
