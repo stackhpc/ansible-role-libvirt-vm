@@ -14,6 +14,7 @@
     <type arch='{{ libvirt_vm_arch }}'{% if machine is not none %} machine='{{ machine }}'{% endif %}>hvm</type>
     <bootmenu enable='no'/>
     <boot dev='hd'/>
+    <boot dev='cdrom'/>
     <boot dev='network'/>
     <bios useserial='yes'/>
   </os>

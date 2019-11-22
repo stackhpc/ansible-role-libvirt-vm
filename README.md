@@ -79,8 +79,8 @@ Role Variables
           allocated.
         - `name`: Name to associate with the volume being created; For `file` type volumes include extension if you would like volumes created with one.
         - `file_path`: Where the image of `file` type volumes should be placed; defaults to `libvirt_volume_default_images_path`
-        - `capacity`: volume capacity (can be suffixed with M,G,T or MB,GB,TB, etc)
-        - `device`: `disk`
+        - `device`: `disk` or `cdrom`
+        - `capacity`: volume capacity (can be suffixed with M,G,T or MB,GB,TB, etc) (required when type is `disk`)
         - `format`: options include `raw`, `qcow2`, `vmdk`.  See `man virsh` for the
           full range.  Default is `qcow2`
         - `image`: (optional) a URL to an image with which the volume is initalised (full copy).
