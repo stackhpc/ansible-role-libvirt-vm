@@ -17,7 +17,7 @@
   script: >
     virt_volume.sh
     -n {{ item.name }}
-    -p {{ item.pool }}
+    -p {{ item.pool |default('default') }}
     -c {{ item.capacity }}
     -f {{ item.format | default(libvirt_volume_default_format) }}
     {% if item.image is defined %}
