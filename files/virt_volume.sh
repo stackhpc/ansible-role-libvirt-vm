@@ -20,7 +20,7 @@
 # Parse options
 OPTIND=1
 
-while getopts ":n:p:c:f:i:b:" opt; do
+while getopts ":n:p:c:f:i:b:a:" opt; do
     case ${opt} in
         n) NAME=$OPTARG;;
         p) POOL=$OPTARG;;
@@ -28,6 +28,7 @@ while getopts ":n:p:c:f:i:b:" opt; do
         f) FORMAT=$OPTARG;;
         i) IMAGE=$OPTARG;;
         b) BACKING_IMAGE=$OPTARG;;
+        a) CHECK=$OPTARG;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
             exit 1
@@ -64,6 +65,12 @@ elif ! echo "$output" | grep 'Storage volume not found' >/dev/null 2>&1; then
     echo "Unexpected error while getting volume info" >&2
     echo "$output"
     exit $result
+fi
+
+# Stop here in check mode, there will be a change
+if [[ $CHECK = "True" ]]; then
+    echo '{"changed": true}'
+    exit 0
 fi
 
 # Create the volume.

@@ -25,6 +25,7 @@
     {% elif item.backing_image is defined %}
     -b {{ item.backing_image }}
     {% endif %}
+    -a {{ ansible_check_mode }}
   with_items: "{{ volumes }}"
   when: item.device | default(libvirt_volume_default_device) == 'disk'
   environment: "{{ libvirt_vm_script_env }}"
@@ -32,4 +33,5 @@
   changed_when:
     - volume_result is success
     - (volume_result.stdout | from_json).changed | default(True)
+  check_mode: False
   become: true
