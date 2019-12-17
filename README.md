@@ -86,6 +86,7 @@ Role Variables
         - `image`: (optional) a URL to an image with which the volume is initalised (full copy).
         - `backing_image`: (optional) name of the backing volume which is assumed to already be the same pool (copy-on-write).
         - `image` and `backing_image` are mutually exclusive options.
+        - `target`: (optional) Manually influence type and order of volumes
 
     - `interfaces`: a list of network interfaces to attach to the VM.
       Each network interface is defined with the following dict:
@@ -161,6 +162,11 @@ Example Playbook
                   format: 'qcow2'
                   capacity: '400GB'
                   pool: 'my-pool'
+                - name: 'debian-10.2.0-amd64-netinst.iso'
+                  type: 'file'
+                  device: 'cdrom'
+                  format: 'raw'
+                  target: 'hda'  # first device on ide bus
               interfaces:
                 - network: 'br-datacentre'
 
