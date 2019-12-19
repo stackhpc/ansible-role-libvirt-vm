@@ -41,7 +41,7 @@
       {% if volume.target is undefined %}
       <target dev='vd{{ 'abcdefghijklmnopqrstuvwxyz'[loop.index - 1] }}'/>
       {% else %}
-      <target dev={{ volume.target }} />
+      <target dev='{{ volume.target }}' />
       {% endif %}
     </disk>
 {% endfor %}
