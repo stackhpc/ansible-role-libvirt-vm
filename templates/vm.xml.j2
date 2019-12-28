@@ -35,6 +35,8 @@
       <driver name='qemu' type='{{ volume.format | default(libvirt_volume_default_format) }}'/>
       {% if volume.type | default(libvirt_volume_default_type) == 'file' %}
       <source file='{{ volume.file_path |default(libvirt_volume_default_images_path) }}/{{ volume.name}}'/>
+      {% elif volume.zfs_pool is defined and volume.zfs_pool is sameas true %}
+      <source dev='/dev/zvol/{{ ansible_local.libvirt.zfs_storage_pools[volume.pool] }}/{{ volume.name }}'/>
       {% else %}
       <source pool='{{ volume.pool }}' volume='{{ volume.name }}'/>
       {% endif %}

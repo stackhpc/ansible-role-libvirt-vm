@@ -77,12 +77,13 @@ Role Variables
       defined with the following dict:
         - `pool`: Name or UUID of the storage pool from which the volume should be
           allocated.
+        - `zfs_pool`: Set this option to `True`, if your pool is based on zfs (`pool type="zfs"` in your libvirt host setup). Only works with `disk` type volumes. A fact set by role `stackhpc.libvirt-host` is required.
         - `name`: Name to associate with the volume being created; For `file` type volumes include extension if you would like volumes created with one.
         - `file_path`: Where the image of `file` type volumes should be placed; defaults to `libvirt_volume_default_images_path`
         - `device`: `disk` or `cdrom`
         - `capacity`: volume capacity (can be suffixed with M,G,T or MB,GB,TB, etc) (required when type is `disk`)
         - `format`: options include `raw`, `qcow2`, `vmdk`.  See `man virsh` for the
-          full range.  Default is `qcow2`
+          full range.  Default is `qcow2`.
         - `image`: (optional) a URL to an image with which the volume is initalised (full copy).
         - `backing_image`: (optional) name of the backing volume which is assumed to already be the same pool (copy-on-write).
         - `image` and `backing_image` are mutually exclusive options.
