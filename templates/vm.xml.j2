@@ -41,9 +41,9 @@
       <source pool='{{ volume.pool }}' volume='{{ volume.name }}'/>
       {% endif %}
       {% if volume.target is undefined %}
-      <target dev='vd{{ 'abcdefghijklmnopqrstuvwxyz'[loop.index - 1] }} {% if volume.device | default(libvirt_volume_default_device) == 'cdrom' %}}bus='sata'{{% endif %}}'/>
+      <target dev='vd{{ 'abcdefghijklmnopqrstuvwxyz'[loop.index - 1] }} {% if volume.device | default(libvirt_volume_default_device) == 'cdrom' %}bus='sata'{% endif %}'/>
       {% else %}
-      <target dev='{{ volume.target }}' {% if volume.device | default(libvirt_volume_default_device) == 'cdrom' %}}bus='sata'{{% endif %}}/>
+      <target dev='{{ volume.target }}' {% if volume.device | default(libvirt_volume_default_device) == 'cdrom' %}bus='sata'{% endif %}/>
       {% endif %}
     </disk>
 {% endfor %}
