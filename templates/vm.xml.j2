@@ -86,5 +86,6 @@
       <listen type='address' address='127.0.0.1'/>
     </graphics>
 {% endif %}
+    <rng model="virtio"><backend model="random">/dev/urandom</backend></rng>
   </devices>
 </domain>
