@@ -41,6 +41,10 @@
   loop_control:
     loop_var: vm
   when: (vm.state | default('present', true)) == 'present'
+  register: new_libvirt_instances
+
+- include_tasks: inventory_group.yml
+  with_items: "{{ new_libvirt_instances.results }}"
 
 - include_tasks: destroy-vm.yml
   with_items: "{{ libvirt_vms }}"

@@ -1,0 +1,8 @@
+---
+
+- name: Populate inventory group 'new_instances' for newly created instances
+  add_host:
+    name: "{{ item.vm.name }}"
+    groupname: "new_instances"
+  with_items: "{{ new_libvirt_instances.results }}"
+
