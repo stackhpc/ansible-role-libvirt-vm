@@ -35,13 +35,11 @@
       <driver name='qemu' type='{{ volume.format | default(libvirt_volume_default_format) }}'/>
       {% if volume.type | default(libvirt_volume_default_type) == 'file' %}
       <source file='{{ volume.file_path |default(libvirt_volume_default_images_path) }}/{{ volume.name}}'/>
-      {% elif volume.zfs_pool is defined and volume.zfs_pool is sameas true %}
-      <source dev='/dev/zvol/{{ ansible_local.libvirt.zfs_storage_pools[volume.pool] }}/{{ volume.name }}'/>
       {% else %}
       <source pool='{{ volume.pool }}' volume='{{ volume.name }}'/>
       {% endif %}
       {% if volume.target is undefined %}
-      <target dev='vd{{ 'abcdefghijklmnopqrstuvwxyz'[loop.index - 1] }}' {% if volume.device | default(libvirt_volume_default_device) == 'cdrom' %}bus='sata'{% endif %}/>
+      <target dev='vd{{ 'abcdefghijklmnopqrstuvwxyz'[loop.index - 1] }}' {% if volume.device | default(libvirt_volume_default_device) == 'cdrom' %}bus='sata'{% else %}bus='virtio'{% endif %}/>
       {% else %}
       <target dev='{{ volume.target }}' {% if volume.device | default(libvirt_volume_default_device) == 'cdrom' %}bus='sata'{% endif %}/>
       {% endif %}
