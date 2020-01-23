@@ -1,0 +1,12 @@
+---
+# Who owns the serial console logs in console_log_path
+libvirt_vm_log_owner: root
+
+# The environment passed to virt_volume.sh
+libvirt_vm_script_env_arch: {}
+
+libvirt_vm_script_env: >-
+  {{ libvirt_vm_script_env_arch | combine(libvirt_vm_virsh_default_env) }}
+
+# Archlinux qemu comes with kvm support compiled in
+libvirt_vm_emulator: /usr/bin/qemu-system-x86_64

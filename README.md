@@ -82,7 +82,7 @@ Role Variables
         - `device`: `disk` or `cdrom`
         - `capacity`: volume capacity (can be suffixed with M,G,T or MB,GB,TB, etc) (required when type is `disk`)
         - `format`: options include `raw`, `qcow2`, `vmdk`.  See `man virsh` for the
-          full range.  Default is `qcow2`
+          full range.  Default is `qcow2`.
         - `image`: (optional) a URL to an image with which the volume is initalised (full copy).
         - `backing_image`: (optional) name of the backing volume which is assumed to already be the same pool (copy-on-write).
         - `image` and `backing_image` are mutually exclusive options.

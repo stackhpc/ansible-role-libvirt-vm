@@ -17,6 +17,9 @@ galaxy_info:
     - name: Debian
       versions:
         - all
+    - name: ArchLinux
+      versions:
+        - all
   galaxy_tags:
     - cloud
     - kvm
