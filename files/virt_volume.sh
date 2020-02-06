@@ -61,10 +61,6 @@ result=$?
 if [[ $result -eq 0 ]]; then
     echo '{"changed": false}'
     exit 0
-elif ! echo "$output" | grep 'Storage volume not found' >/dev/null 2>&1; then
-    echo "Unexpected error while getting volume info" >&2
-    echo "$output"
-    exit $result
 fi
 
 # Stop here in check mode, there will be a change
