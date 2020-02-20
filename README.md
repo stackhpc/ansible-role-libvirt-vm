@@ -75,14 +75,15 @@ Role Variables
 
     - `volumes`: a list of volumes to attach to the VM.  Each volume is
       defined with the following dict:
+        - `type`: Type of the volume. Options include `volume`, `file` and `network`.
         - `pool`: Name or UUID of the storage pool from which the volume should be
-          allocated.
+          allocated. Required when `type` is `volume`.
         - `name`: Name to associate with the volume being created; For `file` type volumes include extension if you would like volumes created with one.
         - `file_path`: Where the image of `file` type volumes should be placed; defaults to `libvirt_volume_default_images_path`
         - `device`: `disk` or `cdrom`
         - `capacity`: volume capacity, can be suffixed with k, M, G, T, P or E when type is `network` or MB,GB,TB, etc when type is `disk` (required when type is `disk` or `network`)
         - `auth`: Authentication details should they be required. If auth is required, `name`, `type`, `token` will need to be supplied.
-        - `source`: Where the remote volume comes from. `protocol`, `name`, `hostname` and `port` should be supplied.
+        - `source`: Where the remote volume comes from when type is `network`. `protocol`, `name`, `hostname` and `port` should be supplied.
         - `format`: options include `raw`, `qcow2`, `vmdk`.  See `man virsh` for the
           full range.  Default is `qcow2`.
         - `image`: (optional) a URL to an image with which the volume is initalised (full copy).
