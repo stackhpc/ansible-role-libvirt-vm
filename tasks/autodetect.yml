@@ -48,12 +48,12 @@
       when: libvirt_vm_engine == 'kvm'
 
     - block:
-        - name: Detect the qemu emulator binary path
+        - name: Detect the QEMU emulator binary path
           stat:
             path: /usr/libexec/qemu-kvm
           register: kvm_emulator_result
 
-        - name: Set a fact containing the KVM emulator binary path
+        - name: Set a fact containing the QEMU emulator binary path
           set_fact:
             libvirt_vm_emulator: "{{ kvm_emulator_result.stat.path }}"
           when: kvm_emulator_result.stat.exists
