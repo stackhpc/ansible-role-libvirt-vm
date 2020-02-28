@@ -49,6 +49,21 @@
 
     - block:
         - name: Detect the QEMU emulator binary path
+          stat:
+            path: /usr/libexec/qemu-kvm
+          register: kvm_emulator_result
+
+        - name: Set a fact containing the QEMU emulator binary path
+          set_fact:
+            libvirt_vm_emulator: "{{ kvm_emulator_result.stat.path }}"
+          when: kvm_emulator_result.stat.exists
+      when:
+        - libvirt_vm_engine == 'qemu'
+        - ansible_os_family == 'RedHat'
+        - ansible_distribution_major_version | int >= 8
+
+    - block:
+        - name: Detect the QEMU emulator binary path
           shell: which qemu-system-{{ libvirt_vm_arch }}
           register: qemu_emulator_result
           changed_when: false
@@ -56,7 +71,10 @@
         - name: Set a fact containing the QEMU emulator binary path
           set_fact:
             libvirt_vm_emulator: "{{ qemu_emulator_result.stdout }}"
-      when: libvirt_vm_engine == 'qemu'
+
+      when:
+        - libvirt_vm_engine == 'qemu'
+        - ansible_os_family != 'RedHat' or ansible_distribution_major_version | int == 7
 
     - name: Fail if unable to detect the emulator
       fail:
