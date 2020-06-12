@@ -40,6 +40,10 @@ libvirt_vm_emulator:
 # configuration use <clock offset="specified offset">
 libvirt_vm_clock_offset: False
 
+# Default value for whether to trust guest receive filters. This gets mapped to
+# the trustGuestRxFilters attribute of VM interfaces.
+libvirt_vm_trust_guest_rx_filters: false
+
 # A list of specifications of VMs to be created.
 # For backwards compatibility, libvirt_vms defaults to a singleton list using
 # the values of the deprecated variables below.

@@ -47,7 +47,7 @@
 {% endfor %}
 {% for interface in interfaces %}
 {% if interface.type is defined and interface.type == 'direct' %}
-    <interface type='direct'>
+    <interface type='direct' {% if interface.trust_guest_rx_filters | default(libvirt_vm_trust_guest_rx_filters) | bool %}trustGuestRxFilters='yes'{% endif %}>
       <source dev='{{ interface.source.dev }}' mode='{{ interface.source.mode | default('vepa') }}'/>
 {% elif interface.type is defined and interface.type == 'bridge' %}
     <interface type='bridge'>
