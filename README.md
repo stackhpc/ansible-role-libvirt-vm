@@ -49,6 +49,10 @@ Role Variables
 - `libvirt_vm_clock_offset`. If defined the instances clock offset is set to
   the provided value. When undefined sync is set to `localtime`.
 
+- `libvirt_vm_trust_guest_rx_filters`: Whether to trust guest receive filters.
+  This gets mapped to the `trustGuestRxFilters` attribute of VM interfaces.
+  Default is `false`
+
 - `libvirt_vms`: list of VMs to be created/destroyed. Each one may have the
   following attributes:
 
@@ -110,7 +114,9 @@ Role Variables
             - `mode`: options include `vepa`, `bridge`, `private` and
               `passthrough`. See `man virsh` for more details. Default is
               `vepa`.
-
+        - `trust_guest_rx_filters`: Whether to trust guest receive filters.
+          This gets mapped to the `trustGuestRxFilters` attribute of VM
+          interfaces.  Default is `libvirt_vm_trust_guest_rx_filters`.
     - `console_log_enabled`: if `true`, log console output to a file at the
       path specified by `console_log_path`, **instead of** to a PTY. If
       `false`, direct terminal output to a PTY at serial port 0. Default is
