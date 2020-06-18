@@ -27,7 +27,7 @@
     {% endif %}
     -a {{ ansible_check_mode }}
   with_items: "{{ volumes }}"
-  when: item.type | default(libvirt_volume_default_device) in ['volume', 'network']
+  when: item.type | default(libvirt_volume_default_type) in ['volume', 'network']
   environment: "{{ libvirt_vm_script_env }}"
   register: volume_result
   changed_when:
@@ -48,4 +48,3 @@
     - volume_result_network.rc == 1
   check_mode: False
   become: true
-
