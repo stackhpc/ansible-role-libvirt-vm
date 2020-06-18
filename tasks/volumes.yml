@@ -13,7 +13,7 @@
   with_items: "{{ volumes | selectattr('image', 'defined') | map(attribute='image') | list }}"
   when: "'http' not in item"
 
-- name: Ensure the VM volumes exist
+- name: Ensure the VM disk volumes exist
   script: >
     virt_volume.sh
     -n {{ item.name }}
@@ -27,11 +27,24 @@
     {% endif %}
     -a {{ ansible_check_mode }}
   with_items: "{{ volumes }}"
-  when: item.type | default(libvirt_volume_default_type) == 'volume'
+  when: item.type | default(libvirt_volume_default_type) in ['volume', 'network']
   environment: "{{ libvirt_vm_script_env }}"
   register: volume_result
   changed_when:
     - volume_result is success
     - (volume_result.stdout | from_json).changed | default(True)
+  check_mode: False
+  become: true
+
+- name: Ensure the VM network volumes exist
+  command: qemu-img create -f {{ item.source.protocol }} {{ item.source.protocol }}:{{ item.source.name }} {{ item.capacity }}
+  with_items: "{{ volumes }}"
+  when: item.type | default(libvirt_volume_default_type) == 'network'
+  register: volume_result_network
+  # 0 is OK, 1 is an existing image
+  failed_when: volume_result_network.rc >= 2
+  changed_when:
+    - volume_result_network is success
+    - volume_result_network.rc == 1
   check_mode: False
   become: true

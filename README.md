@@ -22,12 +22,15 @@ Role Variables
 - `libvirt_volume_default_images_path`: Directory in which instance images are
   stored. Default is '/var/lib/libvirt/images'.
 
-- `libvirt_volume_default_type`: What type of backing volume does the instance use? Default is `volume`.
+- `libvirt_volume_default_type`: What type of backing volume does the instance
+  use? Default is `volume`. Options include `file`, `network` and `volume`.
 
-- `libvirt_volume_default_format`: Format for volumes created by the role, Default is `qcow2`.
+- `libvirt_volume_default_format`: Format for volumes created by the role.
+  Default is `qcow2`. Options include `raw`, `qcow2`, `vmdk`.  See `man virsh`
+  for the full range.
 
-- `libvirt_volume_default_device`: Control how device appears in guest OS. Defaults to `disk`.
-
+- `libvirt_volume_default_device`: Control how device appears in guest OS.
+  Defaults to `disk`. Options include `cdrom` and `disk`.
 
 - `libvirt_vm_engine`: virtualisation engine. If not set, the role will attempt
   to auto-detect the optimal engine to use.
@@ -79,14 +82,22 @@ Role Variables
 
     - `volumes`: a list of volumes to attach to the VM.  Each volume is
       defined with the following dict:
+        - `type`: What type of backing volume does the instance use? All
+          options for `libvirt_volume_default_type` are valid here. Default
+          is `libvirt_volume_default_type`.
         - `pool`: Name or UUID of the storage pool from which the volume should be
-          allocated.
+          allocated. Required when `type` is `volume`.
         - `name`: Name to associate with the volume being created; For `file` type volumes include extension if you would like volumes created with one.
         - `file_path`: Where the image of `file` type volumes should be placed; defaults to `libvirt_volume_default_images_path`
-        - `device`: `disk` or `cdrom`
-        - `capacity`: volume capacity (can be suffixed with M,G,T or MB,GB,TB, etc) (required when type is `disk`)
-        - `format`: options include `raw`, `qcow2`, `vmdk`.  See `man virsh` for the
-          full range.  Default is `qcow2`.
+        - `device`: `Control how device appears in guest OS. All options for
+          `libvirt_volume_default_device` are valid here. Default is
+          `libvirt_volume_default_type`.
+        - `capacity`: volume capacity, can be suffixed with k, M, G, T, P or E when type is `network` or MB,GB,TB, etc when type is `disk` (required when type is `disk` or `network`)
+        - `auth`: Authentication details should they be required. If auth is required, `name`, `type`, `token` will need to be supplied.
+        - `source`: Where the remote volume comes from when type is `network`. `protocol`, `name`, `hostname` and `port` should be supplied.
+        - `format`: Format of the volume. All options for
+          `libvirt_volume_default_format` are valid here. Default is
+          `libvirt_volume_default_format`.
         - `image`: (optional) a URL to an image with which the volume is initalised (full copy).
         - `backing_image`: (optional) name of the backing volume which is assumed to already be the same pool (copy-on-write).
         - `image` and `backing_image` are mutually exclusive options.
@@ -173,6 +184,19 @@ Example Playbook
                   device: 'cdrom'
                   format: 'raw'
                   target: 'hda'  # first device on ide bus
+                - name: 'networkfs'
+                  type: 'network'
+                  format: 'raw'
+                  capacity: '50G'
+                  auth:
+                    name: 'admin'
+                    type: 'ceph'
+                    token: ''
+                  source:
+                    protocol: 'rbd'
+                    name: 'rbd/bigstore'
+                    hostname: 'ceph.example.org'
+                    port: '6789'
               interfaces:
                 - network: 'br-datacentre'
 
