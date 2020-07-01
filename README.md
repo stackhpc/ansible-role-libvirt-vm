@@ -103,7 +103,7 @@ Role Variables
           `libvirt_volume_default_device` are valid here. Default is
           `libvirt_volume_default_type`.
         - `capacity`: volume capacity, can be suffixed with k, M, G, T, P or E when type is `network` or MB,GB,TB, etc when type is `disk` (required when type is `disk` or `network`)
-        - `auth`: Authentication details should they be required. If auth is required, `name`, `type`, `token` will need to be supplied.
+        - `auth`: Authentication details should they be required. If auth is required, `name`, `type`, and `token` or `usage` will need to be supplied. `token` and `usage` should not be both supplied.
         - `source`: Where the remote volume comes from when type is `network`. `protocol`, `name`, `hostname` and `port` should be supplied.
         - `format`: Format of the volume. All options for
           `libvirt_volume_default_format` are valid here. Default is
