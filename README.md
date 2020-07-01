@@ -207,6 +207,22 @@ Example Playbook
                     name: 'rbd/bigstore'
                     hostname: 'ceph.example.org'
                     port: '6789'
+                - name: 'networkfs2'
+                  type: 'network'
+                  format: 'raw'
+                  capacity: '50G'
+                  auth:
+                    name: 'admin'
+                    type: 'ceph'
+                    usage: 'rbd-pool'
+                  source:
+                    protocol: 'rbd'
+                    name: 'rbd/volume'
+                    hosts_list:
+                      - 'mon1.example.org'
+                      - 'mon2.example.org'
+                      - 'mon3.example.org'
+ 
               interfaces:
                 - network: 'br-datacentre'
 
