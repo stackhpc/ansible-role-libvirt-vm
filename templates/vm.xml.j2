@@ -2,7 +2,7 @@
   <name>{{ vm.name }}</name>
   {% if vm.uuid is defined %}
   <uuid>{{ vm.uuid }}</uuid>
-  {% elif libvirt_vm_default_uuid_deterministic is sameas true or (vm.uuid_deterministic is defined and vm.uuid_deterministic is sameas true %}
+  {% elif libvirt_vm_default_uuid_deterministic is sameas true or (vm.uuid_deterministic is defined and vm.uuid_deterministic is sameas true) %}
   <uuid>{{ vm.name | to_uuid }}</uuid>
   {% endif %}
   <memory>{{ vm.memory_mb | int * 1024 }}</memory>
