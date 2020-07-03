@@ -103,7 +103,7 @@ Role Variables
           `libvirt_volume_default_device` are valid here. Default is
           `libvirt_volume_default_type`.
         - `capacity`: volume capacity, can be suffixed with k, M, G, T, P or E when type is `network` or MB,GB,TB, etc when type is `disk` (required when type is `disk` or `network`)
-        - `auth`: Authentication details should they be required. If auth is required, `name`, `type`, and `token` or `usage` will need to be supplied. `token` and `usage` should not be both supplied.
+        - `auth`: Authentication details should they be required. If auth is required, `username`, `type`, and `uuid` or `usage` will need to be supplied. `uuid` and `usage` should not be both supplied.
         - `source`: Where the remote volume comes from when type is `network`. `protocol`, `name`, and `hostname` or `hosts_list` should be supplied. `hostname` and `hosts_list` should not be both supplied. `port` is optional.
         - `format`: Format of the volume. All options for
           `libvirt_volume_default_format` are valid here. Default is
@@ -199,9 +199,9 @@ Example Playbook
                   format: 'raw'
                   capacity: '50G'
                   auth:
-                    name: 'admin'
+                    username: 'admin'
                     type: 'ceph'
-                    token: ''
+                    uuid: ''
                   source:
                     protocol: 'rbd'
                     name: 'rbd/bigstore'
@@ -212,7 +212,7 @@ Example Playbook
                   format: 'raw'
                   capacity: '50G'
                   auth:
-                    name: 'admin'
+                    username: 'admin'
                     type: 'ceph'
                     usage: 'rbd-pool'
                   source:

@@ -41,11 +41,11 @@
       {% if volume.type | default(libvirt_volume_default_type) == 'file' %}
       <source file='{{ volume.file_path |default(libvirt_volume_default_images_path) }}/{{ volume.name}}'/>
       {% elif volume.type is defined and volume.type == 'network' %}
-        {% if volume.auth.name is defined %}
-        <auth username='{{ volume.auth.name }}'>
-          <secret type='{{ volume.auth.type }}' {% if volume.auth.token is defined and volume.auth.token is not none %} uuid='{{ volume.auth.token }}' {% else %} usage='{{ volume.auth.usage }}' {% endif %}/>
+        {% if volume.auth.username is defined %}
+        <auth username='{{ volume.auth.username }}'>
+          <secret type='{{ volume.auth.type }}' {% if volume.auth.uuid is defined and volume.auth.uuid is not none %} uuid='{{ volume.auth.uuid }}' {% else %} usage='{{ volume.auth.usage }}' {% endif %}/>
         </auth>
-        {% endif %} {# End volume.auth.name check #}
+        {% endif %} {# End volume.auth.username check #}
         {% if volume.source.name is defined %}
         <source protocol='{{ volume.source.protocol }}' name='{{ volume.source.name }}'>
           {% if volume.source.hosts_list is defined and volume.source.hosts_list is not none %}
