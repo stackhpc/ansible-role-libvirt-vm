@@ -51,7 +51,7 @@
           {% if volume.source.hosts_list is defined and volume.source.hosts_list is not none %}
           {% for host in volume.source.hosts_list %}
           <host name='{{ host }}' {% if volume.source.port is defined and volume.source.port is not none %} port='{{ volume.source.port }}' {% endif %}/>
-	  {% endfor %}
+	      {% endfor %}
           {% else %}
           <host name='{{ volume.source.hostname }}' {% if volume.source.port is defined and volume.source.port is not none %} port='{{ volume.source.port }}' {% endif %}/>
           {% endif %}
