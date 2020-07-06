@@ -201,19 +201,6 @@ Example Playbook
                   auth:
                     username: 'admin'
                     type: 'ceph'
-                    uuid: ''
-                  source:
-                    protocol: 'rbd'
-                    name: 'rbd/bigstore'
-                    hostname: 'ceph.example.org'
-                    port: '6789'
-                - name: 'networkfs2'
-                  type: 'network'
-                  format: 'raw'
-                  capacity: '50G'
-                  auth:
-                    username: 'admin'
-                    type: 'ceph'
                     usage: 'rbd-pool'
                   source:
                     protocol: 'rbd'
