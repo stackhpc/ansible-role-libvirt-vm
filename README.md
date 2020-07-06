@@ -103,8 +103,8 @@ Role Variables
           `libvirt_volume_default_device` are valid here. Default is
           `libvirt_volume_default_type`.
         - `capacity`: volume capacity, can be suffixed with k, M, G, T, P or E when type is `network` or MB,GB,TB, etc when type is `disk` (required when type is `disk` or `network`)
-        - `auth`: Authentication details should they be required. If auth is required, `name`, `type`, `token` will need to be supplied.
-        - `source`: Where the remote volume comes from when type is `network`. `protocol`, `name`, `hostname` and `port` should be supplied.
+        - `auth`: Authentication details should they be required. If auth is required, `username`, `type`, and `uuid` or `usage` will need to be supplied. `uuid` and `usage` should not be both supplied.
+        - `source`: Where the remote volume comes from when type is `network`. `protocol`, `name` and `hosts_list` should be supplied. `port` is optional.
         - `format`: Format of the volume. All options for
           `libvirt_volume_default_format` are valid here. Default is
           `libvirt_volume_default_format`.
@@ -199,14 +199,17 @@ Example Playbook
                   format: 'raw'
                   capacity: '50G'
                   auth:
-                    name: 'admin'
+                    username: 'admin'
                     type: 'ceph'
-                    token: ''
+                    usage: 'rbd-pool'
                   source:
                     protocol: 'rbd'
-                    name: 'rbd/bigstore'
-                    hostname: 'ceph.example.org'
-                    port: '6789'
+                    name: 'rbd/volume'
+                    hosts_list:
+                      - 'mon1.example.org'
+                      - 'mon2.example.org'
+                      - 'mon3.example.org'
+ 
               interfaces:
                 - network: 'br-datacentre'
 
