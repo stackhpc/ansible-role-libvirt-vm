@@ -209,7 +209,7 @@ Example Playbook
                       - 'mon1.example.org'
                       - 'mon2.example.org'
                       - 'mon3.example.org'
- 
+
               interfaces:
                 - network: 'br-datacentre'
 
@@ -236,6 +236,22 @@ Example Playbook
                   source:
                     dev: 'br-datacentre'
 
+            - state: present
+              name: 'vm3'
+              memory_mb: 1024
+              vcpus: 1
+              volumes:
+                - name: 'lv_vm3'
+                  type: 'block'
+                  capacity: '10GB'
+                  pool: 'lvm_pool'
+                  format: 'raw'
+                - name: 'debian-10.5.0-amd64-netinst.iso'
+                  type: 'file'
+                  device: 'cdrom'
+                  format: 'raw'
+              interfaces:
+                - network: 'test'
 
 Author Information
 ------------------
