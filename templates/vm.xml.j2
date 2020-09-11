@@ -40,6 +40,8 @@
       <driver name='qemu' type='{{ volume.format | default(libvirt_volume_default_format) }}'/>
       {% if volume.type | default(libvirt_volume_default_type) == 'file' %}
       <source file='{{ volume.file_path |default(libvirt_volume_default_images_path) }}/{{ volume.name}}'/>
+      {% elif volume.pool is defined %}
+      <source dev='/dev/{{ volume.pool }}/{{ volume.name }}'/>
       {% elif volume.type is defined and volume.type == 'network' %}
         {% if volume.auth.username is defined %}
         <auth username='{{ volume.auth.username }}'>
