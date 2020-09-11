@@ -27,7 +27,7 @@
     {% endif %}
     -a {{ ansible_check_mode }}
   with_items: "{{ volumes }}"
-  when: item.type | default(libvirt_volume_default_type) == 'volume'
+  when: item.type | default(libvirt_volume_default_type) == 'volume' or ( item.type | default(libvirt_volume_default_type) == 'block' and item.pool is defined )
   environment: "{{ libvirt_vm_script_env }}"
   register: volume_result
   changed_when:
