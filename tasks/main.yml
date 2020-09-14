@@ -37,6 +37,7 @@
     start: "{{ vm.start | default(true) }}"
     autostart: "{{ vm.autostart | default(true) }}"
     enable_vnc: "{{ vm.enable_vnc | default(false) }}"
+    enable_spice: "{{ vm.enable_spice | default(false) }}"
   with_items: "{{ libvirt_vms }}"
   loop_control:
     loop_var: vm

@@ -90,6 +90,9 @@ Role Variables
     - `enable_vnc`: If true enables VNC listening on localhost for use with
       VirtManager and similar tools
 
+    - `enable_spice`: If true enables SPICE listening for use with
+      Virtual Machine Manager and similar tools
+
     - `volumes`: a list of volumes to attach to the VM.  Each volume is
       defined with the following dict:
         - `type`: What type of backing volume does the instance use? All
