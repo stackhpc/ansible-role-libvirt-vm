@@ -84,6 +84,9 @@
       {% else %}
       <model type='virtio'/>
       {% endif %}
+      {% if interface.alias is defined %}
+      <alias name='ua-{{ interface.alias }}'/>
+      {% endif %}
     </interface>
 {% endfor %}
 {% if console_log_enabled | bool %}
