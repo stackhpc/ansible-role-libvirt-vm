@@ -81,7 +81,7 @@
       {# (say you enter 'bond' instead of 'bridge' in your variables) #}
       {% if interface.model is defined %}
       <model type='{{ interface.model }}'/>
-      {% else $}
+      {% else %}
       <model type='virtio'/>
       {% endif %}
     </interface>
