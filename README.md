@@ -143,6 +143,10 @@ Role Variables
           interfaces.  Default is `libvirt_vm_trust_guest_rx_filters`.
         - `model`: The name of the interface model. Eg. `e1000` or `ne2k_pci`, if undefined
            it defaults to `virtio`.
+        - `alias`: An optional interface alias.  This can be used to tie specific network
+           configuration to persistent network devices via name.  The user defined alias is
+           always prefixed with `ua-` to be compliant (aliases without `ua-` are ignored by libvirt.
+           If undefined it defaults to libvirt  managed `vnetX`.
     - `console_log_enabled`: if `true`, log console output to a file at the
       path specified by `console_log_path`, **instead of** to a PTY. If
       `false`, direct terminal output to a PTY at serial port 0. Default is
