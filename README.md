@@ -102,7 +102,7 @@ Role Variables
           allocated. Required when `type` is `volume`.
         - `name`: Name to associate with the volume being created; For `file` type volumes include extension if you would like volumes created with one.
         - `file_path`: Where the image of `file` type volumes should be placed; defaults to `libvirt_volume_default_images_path`
-        - `device`: `Control how device appears in guest OS. All options for
+        - `device`: Control how device appears in guest OS. All options for
           `libvirt_volume_default_device` are valid here. Default is
           `libvirt_volume_default_type`.
         - `capacity`: volume capacity, can be suffixed with k, M, G, T, P or E when type is `network` or MB,GB,TB, etc when type is `disk` (required when type is `disk` or `network`)
