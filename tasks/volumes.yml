@@ -10,6 +10,7 @@
   copy:
     src: "{{ item }}"
     dest: "{{ libvirt_vm_image_cache_path }}/{{ item | basename }}"
+    remote_src: true
   with_items: "{{ volumes | selectattr('image', 'defined') | map(attribute='image') | list }}"
   when: "'http' not in item"
 
