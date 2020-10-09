@@ -53,6 +53,8 @@
           {% endfor %}
       </source>
         {% endif %} {# End volume.source.name check #}
+      {% elif volume.type | default(libvirt_volume_default_type) == 'block' %}
+      <source dev='{{ volume.dev }}'/>
       {% else %} {# End elif volume.type is defined #}
       <source pool='{{ volume.pool }}' volume='{{ volume.name }}'/>
       {% endif %}
