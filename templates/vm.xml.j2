@@ -40,18 +40,18 @@
       <driver name='qemu' type='{{ volume.format | default(libvirt_volume_default_format) }}'/>
       {% if volume.type | default(libvirt_volume_default_type) == 'file' %}
       <source file='{{ volume.file_path |default(libvirt_volume_default_images_path) }}/{{ volume.name}}'/>
-      {% elif volume.type is defined and volume.type == 'network' %}
+      {% elif volume.type | default(libvirt_volume_default_type) == 'network' %}
         {% if volume.auth.username is defined %}
-        <auth username='{{ volume.auth.username }}'>
-          <secret type='{{ volume.auth.type }}' {% if volume.auth.uuid is defined and volume.auth.uuid is not none %} uuid='{{ volume.auth.uuid }}' {% else %} usage='{{ volume.auth.usage }}' {% endif %}/>
-        </auth>
+      <auth username='{{ volume.auth.username }}'>
+        <secret type='{{ volume.auth.type }}' {% if volume.auth.uuid is defined and volume.auth.uuid is not none %} uuid='{{ volume.auth.uuid }}' {% else %} usage='{{ volume.auth.usage }}' {% endif %}/>
+      </auth>
         {% endif %} {# End volume.auth.username check #}
         {% if volume.source.name is defined %}
-        <source protocol='{{ volume.source.protocol }}' name='{{ volume.source.name }}'>
+      <source protocol='{{ volume.source.protocol }}' name='{{ volume.source.name }}'>
           {% for host in volume.source.hosts_list %}
-          <host name='{{ host }}' {% if volume.source.port is defined and volume.source.port is not none %} port='{{ volume.source.port }}' {% endif %}/>
+        <host name='{{ host }}' {% if volume.source.port is defined and volume.source.port is not none %} port='{{ volume.source.port }}' {% endif %}/>
           {% endfor %}
-        </source>
+      </source>
         {% endif %} {# End volume.source.name check #}
       {% else %} {# End elif volume.type is defined #}
       <source pool='{{ volume.pool }}' volume='{{ volume.name }}'/>
