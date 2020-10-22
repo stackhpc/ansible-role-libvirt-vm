@@ -92,6 +92,10 @@ libvirt_vm_virsh_default_env: "{{  { 'LIBVIRT_DEFAULT_URI': libvirt_vm_uri } if 
 # Override for the libvirt connection uri. Leave unset to use the default.
 libvirt_vm_uri: ""
 
+# Whether to use sudo with libvirt commands, this can be disabled with qemu:///session
+# to create VMs as an unprivileged user
+libvirt_vm_sudo: true
+
 # Default CPU mode if libvirt_vm_cpu_mode or vm.cpu_mode is undefined
 libvirt_cpu_mode_default: "{{ 'host-passthrough' if libvirt_vm_engine == 'kvm' else 'host-model' }}"
 
