@@ -9,10 +9,11 @@
 
 - name: Ensure local images are copied
   copy:
-    src: "{{ item }}"
-    dest: "{{ libvirt_vm_image_cache_path }}/{{ item | basename }}"
-  with_items: "{{ volumes | selectattr('image', 'defined') | map(attribute='image') | list }}"
-  when: "'http' not in item"
+    src: "{{ item.image }}"
+    dest: "{{ libvirt_vm_image_cache_path }}/{{ item.image | basename }}"
+    checksum: "{{ item.checksum | default(omit) }}"
+  with_items: "{{ volumes | selectattr('image', 'defined') | list }}"
+  when: "'http' not in item.image"
 
 - name: Ensure the VM disk volumes exist
   script: >
