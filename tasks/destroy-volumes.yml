@@ -3,8 +3,9 @@
   script: >
     destroy_virt_volume.sh
     {{ item.name }}
-    {{ item.pool }}
+    {{ item.pool | default('default') }}
   with_items: "{{ volumes }}"
+  when: item.type | default(libvirt_volume_default_type) == 'volume'
   register: volume_result
   environment: "{{ libvirt_vm_script_env }}"
   changed_when:
