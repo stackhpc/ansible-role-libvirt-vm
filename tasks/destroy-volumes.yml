@@ -3,7 +3,7 @@
   script: >
     destroy_virt_volume.sh
     {{ item.name }}
-    {{ item.pool }}
+    {{ item.pool | default('default') }}
   with_items: "{{ volumes }}"
   when: item.type | default(libvirt_volume_default_type) in ['volume', 'network']
   register: volume_result
