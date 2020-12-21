@@ -27,7 +27,8 @@ Role Variables
   stored. Default is '/var/lib/libvirt/images'.
 
 - `libvirt_volume_default_type`: What type of backing volume does the instance
-  use? Default is `volume`. Options include `file`, `network` and `volume`.
+  use? Default is `volume`. Options include `block`, `file`, `network` and
+  `volume`.
 
 - `libvirt_volume_default_format`: Format for volumes created by the role.
   Default is `qcow2`. Options include `raw`, `qcow2`, `vmdk`.  See `man virsh`
@@ -116,6 +117,7 @@ Role Variables
         - `backing_image`: (optional) name of the backing volume which is assumed to already be the same pool (copy-on-write).
         - `image` and `backing_image` are mutually exclusive options.
         - `target`: (optional) Manually influence type and order of volumes
+        - `dev`: (optional) Block device path when type is `block`.
 
     - `interfaces`: a list of network interfaces to attach to the VM.
       Each network interface is defined with the following dict:
@@ -219,6 +221,9 @@ Example Playbook
                       - 'mon1.example.org'
                       - 'mon2.example.org'
                       - 'mon3.example.org'
+                - type: 'block'
+                  format: 'raw'
+                  dev: '/dev/sda'
  
               interfaces:
                 - network: 'br-datacentre'
