@@ -14,7 +14,7 @@
     checksum: "{{ item.checksum | default(omit) }}"
     remote_src: true
   with_items: "{{ volumes | selectattr('image', 'defined') | list }}"
-  when: "'http' not in item"
+  when: "'http' not in item.image"
 
 - name: Ensure the VM disk volumes exist
   script: >
