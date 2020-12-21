@@ -5,6 +5,7 @@
     {{ item.name }}
     {{ item.pool }}
   with_items: "{{ volumes }}"
+  when: item.type | default(libvirt_volume_default_type) in ['volume', 'network']
   register: volume_result
   environment: "{{ libvirt_vm_script_env }}"
   changed_when:
