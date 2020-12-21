@@ -113,6 +113,7 @@ Role Variables
           `libvirt_volume_default_format` are valid here. Default is
           `libvirt_volume_default_format`.
         - `image`: (optional) a URL to an image with which the volume is initalised (full copy).
+        - `checksum`: (optional) checksum of the `image` to avoid download when it's not necessary.
         - `backing_image`: (optional) name of the backing volume which is assumed to already be the same pool (copy-on-write).
         - `image` and `backing_image` are mutually exclusive options.
         - `target`: (optional) Manually influence type and order of volumes
