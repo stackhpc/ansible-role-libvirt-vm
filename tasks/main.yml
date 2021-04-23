@@ -15,6 +15,13 @@
     (libvirt_vms | selectattr('state', 'defined')
        | selectattr('state', 'equalto', 'absent') | list) != libvirt_vms
 
+# Libvirt requires qemu-img to create qcow2 files.
+- name: Ensure qemu-img is installed
+  package:
+    name: "{{ 'qemu-img' if ansible_os_family == 'RedHat' else 'qemu-utils' }}"
+    update_cache: "{{ True if ansible_pkg_mgr == 'apt' else omit }}"
+  become: true
+
 - include_tasks: volumes.yml
   vars:
     volumes: "{{ vm.volumes | default([], true) }}"
