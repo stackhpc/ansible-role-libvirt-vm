@@ -15,7 +15,7 @@
     - name: Set a fact containing the virtualisation engine
       set_fact:
         libvirt_vm_engine: >-
-          {%- if ansible_architecture != libvirt_vm_arch -%}
+          {%- if ansible_facts.architecture != libvirt_vm_arch -%}
           {# Virtualisation instructions are generally available only for the host
           architecture. Ideally we would test for virtualisation instructions, eg. vt-d
           as it is possible that another architecture could support these even
@@ -59,8 +59,8 @@
           when: kvm_emulator_result.stat.exists
       when:
         - libvirt_vm_engine == 'qemu'
-        - ansible_os_family == 'RedHat'
-        - ansible_distribution_major_version | int >= 8
+        - ansible_facts.os_family == 'RedHat'
+        - ansible_facts.distribution_major_version | int >= 8
 
     - block:
         - name: Detect the QEMU emulator binary path
@@ -74,7 +74,7 @@
 
       when:
         - libvirt_vm_engine == 'qemu'
-        - ansible_os_family != 'RedHat' or ansible_distribution_major_version | int == 7
+        - ansible_facts.os_family != 'RedHat' or ansible_facts.distribution_major_version | int == 7
 
     - name: Fail if unable to detect the emulator
       fail:

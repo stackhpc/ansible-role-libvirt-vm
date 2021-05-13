@@ -3,9 +3,9 @@
   include_vars: "{{ item }}"
   with_first_found:
     - files:
-        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
-        - "{{ ansible_distribution }}.yml"
-        - "{{ ansible_os_family }}.yml"
+        - "{{ ansible_facts.distribution }}-{{ ansible_facts.distribution_major_version }}.yml"
+        - "{{ ansible_facts.distribution }}.yml"
+        - "{{ ansible_facts.os_family }}.yml"
   tags: vars
 
 - include_tasks: autodetect.yml
@@ -18,8 +18,8 @@
 # Libvirt requires qemu-img to create qcow2 files.
 - name: Ensure qemu-img is installed
   package:
-    name: "{{ 'qemu-img' if ansible_os_family == 'RedHat' else 'qemu-utils' }}"
-    update_cache: "{{ True if ansible_pkg_mgr == 'apt' else omit }}"
+    name: "{{ 'qemu-img' if ansible_facts.os_family == 'RedHat' else 'qemu-utils' }}"
+    update_cache: "{{ True if ansible_facts.pkg_mgr == 'apt' else omit }}"
   become: true
 
 - include_tasks: volumes.yml
