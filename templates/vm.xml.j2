@@ -22,7 +22,21 @@
     <boot dev='cdrom'/>
     <boot dev='network'/>
     <bios useserial='yes'/>
+    {% if vm.sysinfo is defined %}
+    <smbios mode='sysinfo'/>
+    {% endif %}
   </os>
+  {% if vm.sysinfo is defined %}
+  <sysinfo type='smbios'>
+    {% for block_name, block_content in vm.sysinfo %}
+    <{{ block_name }}>
+        {% for entry in {{ block_content }} %}
+        <entry {% if entry.name is defined %}name="{{ entry.name }}"{% endif %}>{{ entry.value }}</entry>
+        {% endfor %}
+    </{{ block_name }}>
+    {% endfor %}
+  </sysinfo>
+  {% endif %}
   <features>
     <acpi/>
     <apic/>
