@@ -118,8 +118,6 @@ Role Variables
         - `image` and `backing_image` are mutually exclusive options.
         - `target`: (optional) Manually influence type and order of volumes
         - `dev`: (optional) Block device path when type is `block`.
-        - `remote_src`: (optional) When type is `file` or `block`, specify wether `image` points to a remote file (true) or a file local to the host that launched the playbook (false). Defaults to true.
-
 
     - `interfaces`: a list of network interfaces to attach to the VM.
       Each network interface is defined with the following dict:

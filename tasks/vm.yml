@@ -18,6 +18,7 @@
 
 - name: Ensure the VM is defined
   virt:
+    name: "{{ vm.name }}"
     command: define
     xml: "{{ lookup('template', vm.xml_file | default('vm.xml.j2')) }}"
     uri: "{{ libvirt_vm_uri | default(omit, true) }}"
