@@ -22,6 +22,12 @@
     <boot dev='cdrom'/>
     <boot dev='network'/>
     <bios useserial='yes'/>
+    {% if boot_firmware == "efi"  %}
+      {# NOTE: pflash requires qemu 1.6 or newer. There are alternatives for older versions, but
+               they do not work with secure boot. See OVMF readme for an overview #}
+      <loader readonly='yes' type='pflash'>{{ libvirt_vm_ovmf_efi_firmware_path }}</loader>
+      <nvram template='{{ libvirt_vm_ovmf_efi_variable_store_path }}'/>
+    {% endif %}
   </os>
   <features>
     <acpi/>

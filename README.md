@@ -166,6 +166,8 @@ Role Variables
     - `autostart`: Whether to start the VM when the host starts up. Default is
       `true`.
 
+    - `boot_firmware`: Can be one of: `bios`, or `efi`. Defaults to `bios`.
+
     - `xml_file`: Optionally supply a modified XML template. Base customisation
       off the default `vm.xml.j2` template so as to include the expected jinja
       expressions the role uses.
@@ -226,7 +228,7 @@ Example Playbook
                 - type: 'block'
                   format: 'raw'
                   dev: '/dev/sda'
- 
+
               interfaces:
                 - network: 'br-datacentre'
 

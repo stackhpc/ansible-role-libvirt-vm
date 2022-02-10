@@ -10,3 +10,10 @@ libvirt_vm_script_env_redhat:
 
 libvirt_vm_script_env: >-
   {{ libvirt_vm_script_env_redhat | combine(libvirt_vm_virsh_default_env) }}
+
+# Path to template OVMF efi variable store. A copy will be created
+# for each VM created.
+libvirt_vm_ovmf_efi_variable_store_path: /usr/share/edk2/ovmf/OVMF_VARS.fd
+
+# Path to OVMF efi firmware
+libvirt_vm_ovmf_efi_firmware_path: /usr/share/edk2/ovmf/OVMF_CODE.cc.fd
