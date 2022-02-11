@@ -52,6 +52,8 @@
   when: (vm.state | default('present', true)) == 'present'
 
 - include_tasks: destroy-vm.yml
+  vars:
+    boot_firmware: "{{ vm.boot_firmware | default('bios', true) | lower }}"
   with_items: "{{ libvirt_vms }}"
   loop_control:
     loop_var: vm
