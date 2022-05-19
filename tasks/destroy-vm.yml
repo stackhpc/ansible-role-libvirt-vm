@@ -2,7 +2,7 @@
 # The destroyed state does not seem to be idempotent, so check whether the VM
 # exists before destroying it.
 - name: Check the VM's status
-  virt:
+  community.libvirt.virt:
     name: "{{ vm.name }}"
     command: list_vms
     uri: "{{ libvirt_vm_uri | default(omit, true) }}"
@@ -11,7 +11,7 @@
 
 - block:
     - name: Ensure the VM is absent
-      virt:
+      community.libvirt.virt:
         name: "{{ vm.name }}"
         state: destroyed
         uri: "{{ libvirt_vm_uri | default(omit, true) }}"
@@ -23,7 +23,7 @@
     # actually contains an nvram element rather than relying on
     # boot_firmware having the correct value.
     - name: Ensure the VM is undefined
-      command:
+      ansible.builtin.command:
         cmd: >-
           virsh
           {% if libvirt_vm_uri %}-c {{ libvirt_vm_uri }}{% endif %}
