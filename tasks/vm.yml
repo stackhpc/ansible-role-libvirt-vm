@@ -1,6 +1,6 @@
 ---
 - name: Ensure the VM console log directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ console_log_path | dirname }}"
     state: directory
     owner: "{{ libvirt_vm_log_owner }}"
@@ -11,20 +11,21 @@
   become: "{{ libvirt_vm_sudo }}"
 
 - name: Validate VM interfaces
-  include_tasks: check-interface.yml
+  ansible.builtin.include_tasks: check-interface.yml
   vars:
     interface: "{{ item }}"
   with_items: "{{ interfaces }}"
 
 - name: Ensure the VM is defined
-  virt:
+  community.libvirt.virt:
+    name: "{{ vm.name }}"
     command: define
     xml: "{{ lookup('template', vm.xml_file | default('vm.xml.j2')) }}"
     uri: "{{ libvirt_vm_uri | default(omit, true) }}"
   become: "{{ libvirt_vm_sudo }}"
 
 - name: Ensure the VM is running and started at boot
-  virt:
+  community.libvirt.virt:
     name: "{{ vm.name }}"
     autostart: "{{ autostart | bool }}"
     state: "{{ 'running' if (start | bool) else 'shutdown' }}"

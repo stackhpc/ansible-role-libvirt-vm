@@ -1,17 +1,17 @@
 <domain type='{{ libvirt_vm_engine }}'>
   <name>{{ vm.name }}</name>
-  {% if vm.uuid is defined %}
+{% if vm.uuid is defined %}
   <uuid>{{ vm.uuid }}</uuid>
-  {% elif (libvirt_vm_default_uuid_deterministic | bool) or (vm.uuid_deterministic is defined and (vm.uuid_deterministic | bool)) %}
+{% elif (libvirt_vm_default_uuid_deterministic | bool) or (vm.uuid_deterministic is defined and (vm.uuid_deterministic | bool)) %}
   <uuid>{{ vm.name | to_uuid }}</uuid>
-  {% endif %}
+{% endif %}
   <memory>{{ vm.memory_mb | int * 1024 }}</memory>
   <vcpu>{{ vm.vcpus }}</vcpu>
-  {% if vm.clock_offset |default( libvirt_vm_clock_offset ) %}
+{% if vm.clock_offset |default( libvirt_vm_clock_offset ) %}
   <clock offset="{{ vm.clock_offset }}"/>
-  {% else %}
+{% else %}
   <clock sync="localtime"/>
-  {% endif %}
+{% endif %}
   <on_poweroff>destroy</on_poweroff>
   <on_reboot>restart</on_reboot>
   <on_crash>destroy</on_crash>
@@ -34,67 +34,67 @@
     <apic/>
     <pae/>
   </features>
-  {% if cpu_mode %}
+{% if cpu_mode %}
   <cpu mode='{{ cpu_mode }}'>
     <model fallback='allow'/>
   </cpu>
-  {% endif %}
+{% endif %}
   <devices>
     <emulator>{{ libvirt_vm_emulator }}</emulator>
 {% for volume in volumes %}
     <disk type='{{ volume.type | default(libvirt_volume_default_type) }}' device='{{ volume.device | default(libvirt_volume_default_device) }}'>
       <driver name='qemu' type='{{ volume.format | default(libvirt_volume_default_format) }}'/>
-      {% if volume.type | default(libvirt_volume_default_type) == 'file' %}
+  {% if volume.type | default(libvirt_volume_default_type) == 'file' %}
       <source file='{{ volume.file_path |default(libvirt_volume_default_images_path) }}/{{ volume.name}}'/>
-      {% elif volume.type | default(libvirt_volume_default_type) == 'network' %}
-        {% if volume.auth.username is defined %}
+  {% elif volume.type | default(libvirt_volume_default_type) == 'network' %}
+    {% if volume.auth.username is defined %}
       <auth username='{{ volume.auth.username }}'>
         <secret type='{{ volume.auth.type }}' {% if volume.auth.uuid is defined and volume.auth.uuid is not none %} uuid='{{ volume.auth.uuid }}' {% else %} usage='{{ volume.auth.usage }}' {% endif %}/>
       </auth>
-        {% endif %} {# End volume.auth.username check #}
-        {% if volume.source.name is defined %}
+    {% endif %} {# End volume.auth.username check #}
+    {% if volume.source.name is defined %}
       <source protocol='{{ volume.source.protocol }}' name='{{ volume.source.name }}'>
-          {% for host in volume.source.hosts_list %}
+      {% for host in volume.source.hosts_list %}
         <host name='{{ host }}' {% if volume.source.port is defined and volume.source.port is not none %} port='{{ volume.source.port }}' {% endif %}/>
-          {% endfor %}
+      {% endfor %}
       </source>
-        {% endif %} {# End volume.source.name check #}
-      {% elif volume.type | default(libvirt_volume_default_type) == 'block' %}
+    {% endif %} {# End volume.source.name check #}
+  {% elif volume.type | default(libvirt_volume_default_type) == 'block' %}
       <source dev='{{ volume.dev }}'/>
-      {% else %} {# End elif volume.type is defined #}
+  {% else %} {# End elif volume.type is defined #}
       <source pool='{{ volume.pool }}' volume='{{ volume.name }}'/>
-      {% endif %}
-      {% if volume.target is undefined %}
+  {% endif %}
+  {% if volume.target is undefined %}
       <target dev='vd{{ 'abcdefghijklmnopqrstuvwxyz'[loop.index - 1] }}' {% if volume.device | default(libvirt_volume_default_device) == 'cdrom' %}bus='sata'{% endif %}/>
-      {% else %}
+  {% else %}
       <target dev='{{ volume.target }}' {% if volume.device | default(libvirt_volume_default_device) == 'cdrom' %}bus='sata'{% endif %}/>
-      {% endif %}
+  {% endif %}
     </disk>
 {% endfor %}
 {% for interface in interfaces %}
-{% if interface.type is defined and interface.type == 'direct' %}
+  {% if interface.type is defined and interface.type == 'direct' %}
     <interface type='direct' {% if interface.trust_guest_rx_filters | default(libvirt_vm_trust_guest_rx_filters) | bool %}trustGuestRxFilters='yes'{% endif %}>
       <source dev='{{ interface.source.dev }}' mode='{{ interface.source.mode | default('vepa') }}'/>
-{% elif interface.type is defined and interface.type == 'bridge' %}
+  {% elif interface.type is defined and interface.type == 'bridge' %}
     <interface type='bridge'>
       <source bridge='{{ interface.source.dev }}'/>
-{% elif interface.type is not defined or interface.type == 'network' %}
+  {% elif interface.type is not defined or interface.type == 'network' %}
     <interface type='network'>
       <source network='{{ interface.network }}'/>
-{% endif %}
-      {% if interface.mac is defined %}
+  {% endif %}
+  {% if interface.mac is defined %}
       <mac address='{{ interface.mac }}'/>
-      {% endif %}
+  {% endif %}
       {# if the network configuration is invalid this can still appear in the xml #}
       {# (say you enter 'bond' instead of 'bridge' in your variables) #}
-      {% if interface.model is defined %}
+  {% if interface.model is defined %}
       <model type='{{ interface.model }}'/>
       {% else %}
       <model type='virtio'/>
       {% endif %}
       {% if interface.alias is defined %}
       <alias name='ua-{{ interface.alias }}'/>
-      {% endif %}
+  {% endif %}
     </interface>
 {% endfor %}
 {% if console_log_enabled | bool %}

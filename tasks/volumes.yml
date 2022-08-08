@@ -1,6 +1,6 @@
 ---
 - name: Ensure remote images are downloaded
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ item.image }}"
     dest: "{{ libvirt_vm_image_cache_path }}/{{ item.image | basename }}"
     checksum: "{{ item.checksum | default(omit) }}"
@@ -8,7 +8,7 @@
   when: "'http' in item.image"
 
 - name: Ensure local images are copied
-  copy:
+  ansible.builtin.copy:
     src: "{{ item.image }}"
     dest: "{{ libvirt_vm_image_cache_path }}/{{ item.image | basename }}"
     checksum: "{{ item.checksum | default(omit) }}"
@@ -17,7 +17,7 @@
   when: "'http' not in item.image"
 
 - name: Ensure the VM disk volumes exist
-  script: >
+  ansible.builtin.script: >
     virt_volume.sh
     -n {{ item.name }}
     -p {{ item.pool |default('default') }}
@@ -40,7 +40,7 @@
   become: true
 
 - name: Ensure the VM network volumes exist
-  command: qemu-img create -f {{ item.source.protocol }} {{ item.source.protocol }}:{{ item.source.name }} {{ item.capacity }}
+  ansible.builtin.command: qemu-img create -f {{ item.source.protocol }} {{ item.source.protocol }}:{{ item.source.name }} {{ item.capacity }}
   with_items: "{{ volumes }}"
   when: item.type | default(libvirt_volume_default_type) == 'network'
   register: volume_result_network

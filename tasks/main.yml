@@ -1,6 +1,6 @@
 ---
 - name: Gather os specific variables
-  include_vars: "{{ item }}"
+  ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - files:
         - "{{ ansible_facts.distribution }}-{{ ansible_facts.distribution_major_version }}.yml"
@@ -8,7 +8,7 @@
         - "{{ ansible_facts.os_family }}.yml"
   tags: vars
 
-- include_tasks: autodetect.yml
+- ansible.builtin.include_tasks: autodetect.yml
   # We don't need to know the engine and emulator if we're not creating any new
   # VMs.
   when: >-
@@ -17,12 +17,12 @@
 
 # Libvirt requires qemu-img to create qcow2 files.
 - name: Ensure qemu-img is installed
-  package:
+  ansible.builtin.package:
     name: "{{ 'qemu-img' if ansible_facts.os_family == 'RedHat' else 'qemu-utils' }}"
     update_cache: "{{ True if ansible_facts.pkg_mgr == 'apt' else omit }}"
   become: true
 
-- include_tasks: volumes.yml
+- ansible.builtin.include_tasks: volumes.yml
   vars:
     volumes: "{{ vm.volumes | default([], true) }}"
   with_items: "{{ libvirt_vms }}"
@@ -30,7 +30,7 @@
     loop_var: vm
   when: (vm.state | default('present', true)) == 'present'
 
-- include_tasks: vm.yml
+- ansible.builtin.include_tasks: vm.yml
   vars:
     console_log_enabled: "{{ vm.console_log_enabled | default(false) }}"
     console_log_path: >-
@@ -51,7 +51,7 @@
     loop_var: vm
   when: (vm.state | default('present', true)) == 'present'
 
-- include_tasks: destroy-vm.yml
+- ansible.builtin.include_tasks: destroy-vm.yml
   vars:
     boot_firmware: "{{ vm.boot_firmware | default('bios', true) | lower }}"
   with_items: "{{ libvirt_vms }}"
@@ -59,7 +59,7 @@
     loop_var: vm
   when: (vm.state | default('present', true)) == 'absent'
 
-- include_tasks: destroy-volumes.yml
+- ansible.builtin.include_tasks: destroy-volumes.yml
   vars:
     volumes: "{{ vm.volumes | default([], true) }}"
   with_items: "{{ libvirt_vms }}"

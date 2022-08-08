@@ -2,18 +2,18 @@
 - name: Detect the virtualisation engine
   block:
     - name: Load the kvm kernel module
-      modprobe:
+      community.general.modprobe:
         name: kvm
       become: true
       failed_when: false
 
     - name: Check for the KVM device
-      stat:
+      ansible.builtin.stat:
         path: /dev/kvm
       register: stat_kvm
 
     - name: Set a fact containing the virtualisation engine
-      set_fact:
+      ansible.builtin.set_fact:
         libvirt_vm_engine: >-
           {%- if ansible_facts.architecture != libvirt_vm_arch -%}
           {# Virtualisation instructions are generally available only for the host
@@ -32,7 +32,7 @@
   block:
     - block:
         - name: Detect the KVM emulator binary path
-          stat:
+          ansible.builtin.stat:
             path: "{{ item }}"
           register: kvm_emulator_result
           with_items:
@@ -49,12 +49,12 @@
 
     - block:
         - name: Detect the QEMU emulator binary path
-          stat:
+          ansible.builtin.stat:
             path: /usr/libexec/qemu-kvm
           register: kvm_emulator_result
 
         - name: Set a fact containing the QEMU emulator binary path
-          set_fact:
+          ansible.builtin.set_fact:
             libvirt_vm_emulator: "{{ kvm_emulator_result.stat.path }}"
           when: kvm_emulator_result.stat.exists
       when:
@@ -64,7 +64,7 @@
 
     - block:
         - name: Detect the QEMU emulator binary path
-          shell: which qemu-system-{{ libvirt_vm_arch }}
+          ansible.builtin.command: which qemu-system-{{ libvirt_vm_arch }}
           register: qemu_emulator_result
           changed_when: false
 
@@ -77,7 +77,7 @@
         - ansible_facts.os_family != 'RedHat' or ansible_facts.distribution_major_version | int == 7
 
     - name: Fail if unable to detect the emulator
-      fail:
+      ansible.builtin.fail:
         msg: Unable to detect emulator for engine {{ libvirt_vm_engine }}.
       when: libvirt_vm_emulator is none
   when: libvirt_vm_emulator is none or libvirt_vm_emulator | length == 0

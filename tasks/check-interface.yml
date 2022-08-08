@@ -1,6 +1,6 @@
 ---
 - name: Check network interface has a network name
-  fail:
+  ansible.builtin.fail:
     msg: >
       The interface definition {{ interface }} has type 'network', but does not have
       a network name defined.
@@ -10,7 +10,7 @@
     - interface.network is not defined
 
 - name: Check direct interface has an interface device name
-  fail:
+  ansible.builtin.fail:
     msg: >
       The interface definition {{ interface }} has type 'direct', but does not have
       a host source device defined.
