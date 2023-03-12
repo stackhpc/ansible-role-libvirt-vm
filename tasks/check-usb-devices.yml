@@ -1,0 +1,15 @@
+---
+- name: List USB hardware
+  command: lsusb  -d {{ usb_device.vendor }}:{{ usb_device.product }}
+  register: host_attached_usb_device
+  become: true
+  changed_when: false 
+  ignore_errors: true
+
+- name: Check USB device is present on Host system
+  fail:
+    msg: >
+      The USB Device with Vendor ID:{{ usb_device.vendor }} and Product ID:{{ usb_device.product }} is not seen on host system
+      Is the USB device plugged in correctly ?
+  when:
+    - host_attached_usb_device.rc != 0
