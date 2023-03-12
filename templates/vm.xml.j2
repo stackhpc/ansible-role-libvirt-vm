@@ -124,6 +124,15 @@
       <listen type='address'/>
     </graphics>
 {% endif %}
+{% for usb_device in usb_devices %}
+    <hostdev mode='subsystem' type='usb' managed='yes'>
+      <source>
+        <vendor id='{{ usb_device.vendor }}'/>
+        <product id='{{ usb_device.product }}'/>
+      </source>
+      <address type='usb' bus='0' port='{{ loop.index }}'/>
+    </hostdev>
+  {% endfor %}
     <rng model="virtio"><backend model="random">/dev/urandom</backend></rng>
   </devices>
 </domain>
