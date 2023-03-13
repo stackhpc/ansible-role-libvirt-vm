@@ -41,6 +41,7 @@
     cpu_mode: "{{ vm.cpu_mode | default(libvirt_cpu_mode_default) }}"
     volumes: "{{ vm.volumes | default([], true) }}"
     interfaces: "{{ vm.interfaces | default([], true) }}"
+    usb_devices: "{{ vm.usb_devices | default([], false) }}"
     start: "{{ vm.start | default(true) }}"
     autostart: "{{ vm.autostart | default(true) }}"
     enable_vnc: "{{ vm.enable_vnc | default(false) }}"
