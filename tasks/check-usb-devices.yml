@@ -4,7 +4,7 @@
   register: host_attached_usb_device
   become: true
   changed_when: false 
-  ignore_errors: true
+  failed_when: false
 
 - name: Check USB device is present on Host system
   fail:
