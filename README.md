@@ -120,6 +120,27 @@ Role Variables
         - `dev`: (optional) Block device path when type is `block`.
         - `remote_src`: (optional) When type is `file` or `block`, specify wether `image` points to a remote file (true) or a file local to the host that launched the playbook (false). Defaults to true.
 
+    - `usb_devices`: a list of usb devices to present to the vm from the host.
+
+      Each usb device is defined with the following dict:
+
+        - `vendor`: The vendor id of the USB device. 
+        - `product`: The product id of the USB device.
+      
+      Note - Libvirt will error if the VM is provisioned and the USB device is not attached.
+
+      To obtain the vendor id and product id of the usb device from the host running as sudo / root with the usb device plugged in
+      run `lsusb -v`. Example below with an attached Sandisk USB Memory Stick with vendor id: `0x0781` and product id: `0x5567`
+
+      ```
+      lsusb -v | grep -A4 -i sandisk
+
+        idVendor           0x0781 SanDisk Corp.
+        idProduct          0x5567 Cruzer Blade
+        bcdDevice            1.00
+        iManufacturer           1 
+        iProduct                2 
+      ```
 
     - `interfaces`: a list of network interfaces to attach to the VM.
       Each network interface is defined with the following dict:
@@ -231,6 +252,10 @@ Example Playbook
 
               interfaces:
                 - network: 'br-datacentre'
+              
+              usb_devices:
+                - vendor: '0x0781'
+                  product: '0x5567'
 
             - state: present
               name: 'vm2'

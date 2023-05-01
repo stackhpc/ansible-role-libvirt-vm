@@ -16,6 +16,12 @@
     interface: "{{ item }}"
   with_items: "{{ interfaces }}"
 
+- name: Validate Host USB Devices
+  include_tasks: check-usb-devices.yml
+  vars:
+    usb_device: "{{ item }}"
+  with_items: "{{ usb_devices }}"
+
 - name: Ensure the VM is defined
   community.libvirt.virt:
     name: "{{ vm.name }}"
