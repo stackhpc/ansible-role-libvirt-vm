@@ -17,7 +17,7 @@
   with_items: "{{ interfaces }}"
 
 - name: Validate Host USB Devices
-  include_tasks: check-usb-devices.yml
+  ansible.builtin.include_tasks: check-usb-devices.yml
   vars:
     usb_device: "{{ item }}"
   with_items: "{{ usb_devices }}"
