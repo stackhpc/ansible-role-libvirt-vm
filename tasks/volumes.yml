@@ -36,7 +36,7 @@
   changed_when:
     - volume_result is success
     - (volume_result.stdout | from_json).changed | default(True)
-  check_mode: False
+  check_mode: false
   become: true
 
 - name: Ensure the VM network volumes exist
@@ -49,5 +49,5 @@
   changed_when:
     - volume_result_network is success
     - volume_result_network.rc == 1
-  check_mode: False
+  check_mode: false
   become: true
