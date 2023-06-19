@@ -8,12 +8,12 @@
       failed_when: false
 
     - name: Check for the KVM device
-      stat:
+      ansible.builtin.stat:
         path: /dev/kvm
       register: stat_kvm
 
     - name: Set a fact containing the virtualisation engine
-      set_fact:
+      ansible.builtin.set_fact:
         libvirt_vm_engine: >-
           {%- if ansible_facts.architecture != libvirt_vm_arch -%}
           {# Virtualisation instructions are generally available only for the host
@@ -30,9 +30,10 @@
 
 - name: Detect the virtualisation emulator
   block:
-    - block:
+    - name: Set fact when vm engine is kvm
+      block:
         - name: Detect the KVM emulator binary path
-          stat:
+          ansible.builtin.stat:
             path: "{{ item }}"
           register: kvm_emulator_result
           with_items:
@@ -41,20 +42,21 @@
             - /usr/libexec/qemu-kvm
 
         - name: Set a fact containing the KVM emulator binary path
-          set_fact:
+          ansible.builtin.set_fact:
             libvirt_vm_emulator: "{{ item.item }}"
           with_items: "{{ kvm_emulator_result.results }}"
           when: item.stat.exists
       when: libvirt_vm_engine == 'kvm'
 
-    - block:
+    - name: Set a fact when RedHat and vm engine is qemu
+      block:
         - name: Detect the QEMU emulator binary path
-          stat:
+          ansible.builtin.stat:
             path: /usr/libexec/qemu-kvm
           register: kvm_emulator_result
 
         - name: Set a fact containing the QEMU emulator binary path
-          set_fact:
+          ansible.builtin.set_fact:
             libvirt_vm_emulator: "{{ kvm_emulator_result.stat.path }}"
           when: kvm_emulator_result.stat.exists
       when:
@@ -62,14 +64,15 @@
         - ansible_facts.os_family == 'RedHat'
         - ansible_facts.distribution_major_version | int >= 8
 
-    - block:
+    - name: Set a fact when not RedHat and vm engine is qemu
+      block:
         - name: Detect the QEMU emulator binary path
-          shell: which qemu-system-{{ libvirt_vm_arch }}
+          ansible.builtin.shell: which qemu-system-{{ libvirt_vm_arch }}
           register: qemu_emulator_result
           changed_when: false
 
         - name: Set a fact containing the QEMU emulator binary path
-          set_fact:
+          ansible.builtin.set_fact:
             libvirt_vm_emulator: "{{ qemu_emulator_result.stdout }}"
 
       when:
@@ -77,7 +80,7 @@
         - ansible_facts.os_family != 'RedHat' or ansible_facts.distribution_major_version | int == 7
 
     - name: Fail if unable to detect the emulator
-      fail:
+      ansible.builtin.fail:
         msg: Unable to detect emulator for engine {{ libvirt_vm_engine }}.
       when: libvirt_vm_emulator is none
   when: libvirt_vm_emulator is none or libvirt_vm_emulator | length == 0
