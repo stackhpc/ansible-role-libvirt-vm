@@ -46,6 +46,7 @@
     autostart: "{{ vm.autostart | default(true) }}"
     enable_vnc: "{{ vm.enable_vnc | default(false) }}"
     enable_spice: "{{ vm.enable_spice | default(false) }}"
+    enable_guest_virtio: "{{ vm.enable_guest_virtio | default(false) }}"
     boot_firmware: "{{ vm.boot_firmware | default('bios', true) | lower }}"
   with_items: "{{ libvirt_vms }}"
   loop_control:

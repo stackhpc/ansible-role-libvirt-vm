@@ -94,6 +94,9 @@ Role Variables
     - `enable_spice`: If true enables SPICE listening for use with
       Virtual Machine Manager and similar tools
 
+    - `enable_guest_virtio`: If true enables guest virtio device for use with
+      Qemu guest agent
+
     - `volumes`: a list of volumes to attach to the VM.  Each volume is
       defined with the following dict:
         - `type`: What type of backing volume does the instance use? All
