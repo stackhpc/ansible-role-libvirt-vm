@@ -124,6 +124,11 @@
       <listen type='address'/>
     </graphics>
 {% endif %}
+{% if enable_guest_virtio |bool %}
+    <channel type='unix'>
+      <target type='virtio' name='org.qemu.guest_agent.0'/>
+    </channel>
+{% endif %}
 {% for usb_device in usb_devices %}
     <hostdev mode='subsystem' type='usb' managed='yes'>
       <source>
