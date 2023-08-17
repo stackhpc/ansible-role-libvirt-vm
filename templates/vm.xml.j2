@@ -89,10 +89,10 @@
       {# (say you enter 'bond' instead of 'bridge' in your variables) #}
   {% if interface.model is defined %}
       <model type='{{ interface.model }}'/>
-      {% else %}
+  {% else %}
       <model type='virtio'/>
-      {% endif %}
-      {% if interface.alias is defined %}
+  {% endif %}
+  {% if interface.alias is defined %}
       <alias name='ua-{{ interface.alias }}'/>
   {% endif %}
     </interface>
