@@ -43,7 +43,7 @@
     <emulator>{{ libvirt_vm_emulator }}</emulator>
 {% for volume in volumes %}
     <disk type='{{ volume.type | default(libvirt_volume_default_type) }}' device='{{ volume.device | default(libvirt_volume_default_device) }}'>
-      <driver name='qemu' type='{{ volume.format | default(libvirt_volume_default_format) }}'/>
+      <driver name='qemu' type='{{ volume.format | default(libvirt_volume_default_format) }}' {% if volume.discard is defined %} discard='{{ volume.discard }}' {% endif %}/>
   {% if volume.type | default(libvirt_volume_default_type) == 'file' %}
       <source file='{{ volume.file_path |default(libvirt_volume_default_images_path) }}/{{ volume.name}}'/>
   {% elif volume.type | default(libvirt_volume_default_type) == 'network' %}
@@ -123,6 +123,11 @@
     <graphics type='spice' autoport='yes'>
       <listen type='address'/>
     </graphics>
+{% endif %}
+{% if enable_guest_virtio |bool %}
+    <channel type='unix'>
+      <target type='virtio' name='org.qemu.guest_agent.0'/>
+    </channel>
 {% endif %}
 {% for usb_device in usb_devices %}
     <hostdev mode='subsystem' type='usb' managed='yes'>

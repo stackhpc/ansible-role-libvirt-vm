@@ -7,7 +7,7 @@
     command: list_vms
     uri: "{{ libvirt_vm_uri | default(omit, true) }}"
   register: result
-  become: yes
+  become: true
 
 - block:
     - name: Ensure the VM is absent
@@ -15,7 +15,7 @@
         name: "{{ vm.name }}"
         state: destroyed
         uri: "{{ libvirt_vm_uri | default(omit, true) }}"
-      become: yes
+      become: true
 
     # note(wszumski): the virt module does not seem to support
     # removing vms with nvram defined - as a workaround, use the
@@ -30,6 +30,6 @@
           undefine
           {% if boot_firmware == 'efi' %} --nvram{% endif %}
           {{ vm.name }}
-      become: yes
+      become: true
       changed_when: true
   when: vm.name in result.list_vms

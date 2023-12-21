@@ -69,7 +69,7 @@
           changed_when: false
 
         - name: Set a fact containing the QEMU emulator binary path
-          set_fact:
+          ansible.builtin.set_fact:
             libvirt_vm_emulator: "{{ qemu_emulator_result.stdout }}"
 
       when:
