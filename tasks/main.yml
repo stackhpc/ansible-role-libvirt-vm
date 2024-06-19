@@ -16,9 +16,17 @@
        | selectattr('state', 'equalto', 'absent') | list) != libvirt_vms
 
 # Libvirt requires qemu-img to create qcow2 files.
-- name: Ensure qemu-img is installed
+- name: Ensure qemu-img and ovmf is installed
+  vars:
+    is_efi: >-
+      (libvirt_vms | selectattr('state', 'defined')
+        | selectattr('state', 'equalto', 'absent') |
+        | selectattr('boot_firmware', 'equalto', 'efi')) | bool
+    packages:
+      - "{{ 'qemu-img' if ansible_facts.os_family == 'RedHat' else 'qemu-utils' }}"
+      - "{{ 'ovmf' if ansible_facts.os_family == 'Debian' and is_efi }}"
   ansible.builtin.package:
-    name: "{{ 'qemu-img' if ansible_facts.os_family == 'RedHat' else 'qemu-utils' }}"
+    name: "{{ packages | select | unique | list }}"
     update_cache: "{{ True if ansible_facts.pkg_mgr == 'apt' else omit }}"
   become: true
 
