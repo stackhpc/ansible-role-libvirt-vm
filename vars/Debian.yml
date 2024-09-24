@@ -13,7 +13,7 @@ libvirt_vm_script_env: >-
 
 # Path to template OVMF efi variable store. A copy will be created
 # for each VM created.
-libvirt_vm_ovmf_efi_variable_store_path: /usr/share/OVMF/OVMF_VARS.fd
+libvirt_vm_ovmf_efi_variable_store_path: "/usr/share/OVMF/{{ 'OVMF_VARS_4M.fd' if ansible_facts.distribution_release == 'noble' else 'OVMF_VARS.fd' }}"
 
 # Path to OVMF efi firmware
-libvirt_vm_ovmf_efi_firmware_path: /usr/share/OVMF/OVMF_CODE.fd
+libvirt_vm_ovmf_efi_firmware_path: "/usr/share/OVMF/{{ 'OVMF_CODE_4M.fd' if ansible_facts.distribution_release == 'noble' else 'OVMF_CODE.fd' }}"
