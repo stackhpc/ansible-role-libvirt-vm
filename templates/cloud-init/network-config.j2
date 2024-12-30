@@ -13,7 +13,9 @@ ethernets:
     addresses:
       - {{ interface.address }}
 {% if interface.gateway is defined %}
-    gateway4: {{ interface.gateway }}
+    routes:
+      - to: default
+        via: {{ interface.gateway }}
 {% endif %}
 {% if interface.nameservers is defined %}
     nameservers:
