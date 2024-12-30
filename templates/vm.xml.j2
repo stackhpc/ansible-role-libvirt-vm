@@ -145,6 +145,11 @@
       </source>
     </hostdev>
   {% endfor %}
+    {% if vm.tpm_enabled | default(false) | bool %}
+    <tpm model='tpm-tis'>
+      <backend type='emulator' version='{{ vm.tpm_version | default("2.0") }}'/>
+    </tpm>
+    {% endif %}
     <rng model="virtio"><backend model="random">/dev/urandom</backend></rng>
   </devices>
 </domain>

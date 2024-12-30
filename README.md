@@ -11,6 +11,8 @@ be preconfigured with libvirt/KVM.
 
 `genisoimage` is required for cloud-init support.
 
+`swtpm` and `swtpm-tools` packages are required for TPM support.
+
 Role Variables
 --------------
 
@@ -203,6 +205,9 @@ Role Variables
 
     - `boot_firmware`: Can be one of: `bios`, or `efi`. Defaults to `bios`.
 
+    - `tpm_enabled`: Whether to enable TPM for this VM. Default is `false`.
+
+    - `tpm_version`: TPM version to use. Can be '1.2' or '2.0'. Default is '2.0'.
 
     - `cloud_init_enabled`: Whether to enable cloud-init for this VM. Default is `false`.
 
@@ -297,6 +302,8 @@ Example Playbook
                   type: 'file'
                   file_path: '/srv/cloud/images'
                   capacity: '900GB'
+              tpm_enabled: true
+              tpm_version: "2.0"
               cloud_init_enabled: true
               cloud_init_user_data:
                 users:
