@@ -9,6 +9,8 @@ Requirements
 The host should have Virtualization Technology (VT) enabled and should
 be preconfigured with libvirt/KVM.
 
+`genisoimage` is required for cloud-init support.
+
 Role Variables
 --------------
 
@@ -60,6 +62,9 @@ Role Variables
 - `libvirt_vm_trust_guest_rx_filters`: Whether to trust guest receive filters.
   This gets mapped to the `trustGuestRxFilters` attribute of VM interfaces.
   Default is `false`
+
+- `libvirt_vm_cloud_init_dir`: Directory in which cloud-init files are
+  stored. Default is '{{ libvirt_volume_default_images_path }}/cloud-init'.
 
 - `libvirt_vms`: list of VMs to be created/destroyed. Each one may have the
   following attributes:
@@ -172,10 +177,16 @@ Role Variables
           interfaces.  Default is `libvirt_vm_trust_guest_rx_filters`.
         - `model`: The name of the interface model. Eg. `e1000` or `ne2k_pci`, if undefined
            it defaults to `virtio`.
-        - `alias`: An optional interface alias.  This can be used to tie specific network
-           configuration to persistent network devices via name.  The user defined alias is
-           always prefixed with `ua-` to be compliant (aliases without `ua-` are ignored by libvirt.
-           If undefined it defaults to libvirt  managed `vnetX`.
+        - `alias`: An optional interface alias. When cloud-init is enabled, this is required
+           and used as the interface name in the guest. The alias is
+           always prefixed with `ua-` to be compliant (aliases without `ua-` are ignored by libvirt).
+           If undefined it defaults to libvirt managed `vnetX`.
+        - `address`: Optional static IP address in CIDR notation (e.g., "192.168.1.100/24").
+          Requires cloud-init to be enabled.
+        - `gateway`: Optional gateway IP address for the interface.
+          Requires cloud-init to be enabled.
+        - `nameservers`: Optional list of DNS nameservers.
+          Requires cloud-init to be enabled.
     - `console_log_enabled`: if `true`, log console output to a file at the
       path specified by `console_log_path`, **instead of** to a PTY. If
       `false`, direct terminal output to a PTY at serial port 0. Default is
@@ -191,6 +202,18 @@ Role Variables
       `true`.
 
     - `boot_firmware`: Can be one of: `bios`, or `efi`. Defaults to `bios`.
+
+
+    - `cloud_init_enabled`: Whether to enable cloud-init for this VM. Default is `false`.
+
+    - `cloud_init_user_data`: Cloud-init user configuration in YAML format.
+      You can find examples of the format here: [Cloud-init User Data Examples](https://docs.cloud-init.io/en/latest/reference/examples.html)
+
+    - `cloud_init_meta_data`: Optional cloud-init metadata in YAML format.
+
+    - `cloud_init_network_config`: Optional custom network configuration in YAML format.
+      If not specified, network configuration will be generated from interface settings.
+      You can find examples of the format here: [Cloud-init Network Configuration](https://docs.cloud-init.io/en/latest/reference/network-config-format-v2.html)
 
     - `xml_file`: Optionally supply a modified XML template. Base customisation
       off the default `vm.xml.j2` template so as to include the expected jinja
@@ -274,14 +297,33 @@ Example Playbook
                   type: 'file'
                   file_path: '/srv/cloud/images'
                   capacity: '900GB'
+              cloud_init_enabled: true
+              cloud_init_user_data:
+                users:
+                  - name: myuser
+                    sudo: ALL=(ALL) NOPASSWD:ALL
+                    ssh_authorized_keys:
+                      - ssh-rsa AAAAB...
+              cloud_init_meta_data:
+                foo: bar
               interfaces:
                 - type: 'direct'
                   source:
                     dev: 'eth123'
                     mode: 'private'
+                  mac: '00:11:22:33:44:55'
+                  alias: 'eth0'
+                  address: '192.168.122.10/24'
+                  gateway: '192.168.122.1'
+                  nameservers:
+                    - '8.8.8.8'
+                    - '8.8.4.4'
                 - type: 'bridge'
                   source:
                     dev: 'br-datacentre'
+                  mac: '00:11:22:33:44:56'
+                  alias: 'eth1'
+                  # This interface will use dhcp to get an ip address
 
 
 Author Information

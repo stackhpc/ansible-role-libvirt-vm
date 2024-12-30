@@ -1,0 +1,51 @@
+---
+# Tasks for generating cloud-init configuration and ISO
+
+- name: Get VM UUID
+  ansible.builtin.command:
+    cmd: virsh -q domuuid {{ vm.name }}
+  register: vm_uuid
+  changed_when: false
+  failed_when: false
+
+- name: Ensure VM-specific cloud-init directory exists
+  ansible.builtin.file:
+    path: "{{ libvirt_vm_cloud_init_dir }}/{{ vm.name }}"
+    state: directory
+    mode: '0755'
+  become: "{{ libvirt_vm_sudo }}"
+
+- name: Generate cloud-init meta-data file
+  ansible.builtin.template:
+    src: cloud-init/meta-data.j2
+    dest: "{{ libvirt_vm_cloud_init_dir }}/{{ vm.name }}/meta-data"
+    mode: '0644'
+  become: "{{ libvirt_vm_sudo }}"
+  register: meta_data_task
+
+- name: Generate cloud-init user-data file
+  ansible.builtin.template:
+    src: cloud-init/user-data.j2
+    dest: "{{ libvirt_vm_cloud_init_dir }}/{{ vm.name }}/user-data"
+    mode: '0644'
+  become: "{{ libvirt_vm_sudo }}"
+  register: user_data_task
+
+- name: Generate cloud-init network-config file
+  ansible.builtin.template:
+    src: cloud-init/network-config.j2
+    dest: "{{ libvirt_vm_cloud_init_dir }}/{{ vm.name }}/network-config"
+    mode: '0644'
+  become: "{{ libvirt_vm_sudo }}"
+  register: network_config_task
+
+- name: Generate cloud-init ISO
+  ansible.builtin.command:
+    cmd: >-
+      genisoimage -output {{ libvirt_vm_cloud_init_dir }}/{{ vm.name }}/cloud-init.iso
+      -volid cidata -joliet -rock -input-charset utf-8
+      {{ libvirt_vm_cloud_init_dir }}/{{ vm.name }}/meta-data
+      {{ libvirt_vm_cloud_init_dir }}/{{ vm.name }}/user-data
+      {{ libvirt_vm_cloud_init_dir }}/{{ vm.name }}/network-config
+  become: "{{ libvirt_vm_sudo }}"
+  when: (cloud_init_enabled | bool) and (meta_data_task.changed or user_data_task.changed or network_config_task.changed) 

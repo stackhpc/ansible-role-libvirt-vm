@@ -102,6 +102,9 @@ libvirt_vm_sudo: true
 # Default CPU mode if libvirt_vm_cpu_mode or vm.cpu_mode is undefined
 libvirt_cpu_mode_default: "{{ 'host-passthrough' if libvirt_vm_engine == 'kvm' else 'host-model' }}"
 
+# Path where cloud-init files will be stored
+libvirt_vm_cloud_init_dir: "{{ libvirt_volume_default_images_path }}/cloud-init"
+
 ### DEPRECATED ###
 # Use the above settings for each item within `libvirt_vms`, instead of the
 # below deprecated variables.
