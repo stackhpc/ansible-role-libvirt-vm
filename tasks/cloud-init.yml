@@ -39,6 +39,12 @@
   become: "{{ libvirt_vm_sudo }}"
   register: network_config_task
 
+- name: Check if cloud-init ISO exists
+  ansible.builtin.stat:
+    path: "{{ libvirt_vm_cloud_init_dir }}/{{ vm.name }}/cloud-init.iso"
+  become: "{{ libvirt_vm_sudo }}"
+  register: cloud_init_iso_exists
+
 - name: Generate cloud-init ISO
   ansible.builtin.command:
     cmd: >-
@@ -48,4 +54,4 @@
       {{ libvirt_vm_cloud_init_dir }}/{{ vm.name }}/user-data
       {{ libvirt_vm_cloud_init_dir }}/{{ vm.name }}/network-config
   become: "{{ libvirt_vm_sudo }}"
-  when: (cloud_init_enabled | bool) and (meta_data_task.changed or user_data_task.changed or network_config_task.changed) 
+  when: meta_data_task.changed or user_data_task.changed or network_config_task.changed or not cloud_init_iso_exists.stat.exists
