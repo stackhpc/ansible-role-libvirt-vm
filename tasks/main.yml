@@ -61,6 +61,19 @@
     loop_var: vm
   when: (vm.state | default('present', true)) == 'present'
 
+- name: Remove cloud-init directory if disabled
+  ansible.builtin.file:
+    path: "{{ libvirt_vm_cloud_init_dir }}/{{ vm.name }}"
+    state: absent
+    mode: '0755'
+  become: "{{ libvirt_vm_sudo }}"
+  with_items: "{{ libvirt_vms }}"
+  loop_control:
+    loop_var: vm
+  when: >-
+    not (vm.cloud_init_enabled | default(false) | bool)
+    and (vm.state | default('present', true)) == 'present'
+
 - include_tasks: destroy-vm.yml
   vars:
     boot_firmware: "{{ vm.boot_firmware | default('bios', true) | lower }}"

@@ -65,12 +65,20 @@
       <source pool='{{ volume.pool }}' volume='{{ volume.name }}'/>
       {% endif %}
       {% if volume.target is undefined %}
-      <target dev='vd{{ 'abcdefghijklmnopqrstuvwxyz'[loop.index - 1] }}' {% if volume.device | default(libvirt_volume_default_device) == 'cdrom' %}bus='sata'{% endif %}/>
+      <target dev='vd{{ 'abcdefghijklmnopqrstuvwxy'[loop.index - 1] }}' {% if volume.device | default(libvirt_volume_default_device) == 'cdrom' %}bus='sata'{% endif %}/>
       {% else %}
       <target dev='{{ volume.target }}' {% if volume.device | default(libvirt_volume_default_device) == 'cdrom' %}bus='sata'{% endif %}/>
       {% endif %}
     </disk>
 {% endfor %}
+{% if vm.cloud_init_enabled | default(false) | bool %}
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='{{ libvirt_vm_cloud_init_dir }}/{{ vm.name }}/cloud-init.iso'/>
+      <target dev='vdz' bus='sata'/>
+      <readonly/>
+    </disk>
+{% endif %}
 {% for interface in interfaces %}
 {% if interface.type is defined and interface.type == 'direct' %}
     <interface type='direct' {% if interface.trust_guest_rx_filters | default(libvirt_vm_trust_guest_rx_filters) | bool %}trustGuestRxFilters='yes'{% endif %}>
@@ -137,6 +145,11 @@
       </source>
     </hostdev>
   {% endfor %}
+    {% if vm.tpm_enabled | default(false) | bool %}
+    <tpm model='tpm-tis'>
+      <backend type='emulator' version='{{ vm.tpm_version | default("2.0") }}'/>
+    </tpm>
+    {% endif %}
     <rng model="virtio"><backend model="random">/dev/urandom</backend></rng>
   </devices>
 </domain>
