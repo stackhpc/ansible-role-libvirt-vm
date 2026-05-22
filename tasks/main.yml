@@ -19,12 +19,15 @@
 - name: Ensure qemu-img and ovmf is installed
   vars:
     is_efi: >-
-      (libvirt_vms | selectattr('state', 'defined')
-        | selectattr('state', 'equalto', 'absent') |
-        | selectattr('boot_firmware', 'equalto', 'efi')) | bool
+      {{ (libvirt_vms |
+          selectattr('boot_firmware', 'defined') |
+          selectattr('boot_firmware', 'equalto', 'efi') |
+          list |
+          length) > 0 }}
     packages:
       - "{{ 'qemu-img' if ansible_facts.os_family == 'RedHat' else 'qemu-utils' }}"
-      - "{{ 'ovmf' if ansible_facts.os_family == 'Debian' and is_efi }}"
+      - "{{ ('qemu-efi-aarch64' if libvirt_vm_arch == 'aarch64' else 'ovmf') if ansible_facts.os_family == 'Debian' and is_efi }}"
+      - "{{ 'edk2-aarch64' if ansible_facts.os_family == 'RedHat' and libvirt_vm_arch == 'aarch64' and is_efi }}"
   ansible.builtin.package:
     name: "{{ packages | select | unique | list }}"
     update_cache: "{{ True if ansible_facts.pkg_mgr == 'apt' else omit }}"
@@ -44,7 +47,7 @@
     console_log_path: >-
       {{ vm.console_log_path |
          default(libvirt_vm_default_console_log_dir + '/' +  vm.name + '-console.log', true) }}
-    machine_default: "{{ none if libvirt_vm_engine == 'kvm' else 'pc' }}"
+    machine_default: "{{ 'virt' if libvirt_vm_arch == 'aarch64' else (none if libvirt_vm_engine == 'kvm' else 'pc') }}"
     machine: "{{ vm.machine | default(machine_default, true) }}"
     cpu_mode: "{{ vm.cpu_mode | default(libvirt_cpu_mode_default) }}"
     volumes: "{{ vm.volumes | default([], true) }}"

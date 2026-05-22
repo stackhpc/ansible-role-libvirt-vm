@@ -13,10 +13,10 @@ libvirt_vm_script_env: >-
 
 # Path to template OVMF efi variable store. A copy will be created
 # for each VM created.
-libvirt_vm_ovmf_efi_variable_store_path: /usr/share/edk2/ovmf/OVMF_VARS.fd
+libvirt_vm_ovmf_efi_variable_store_path: "{{ '/usr/share/edk2/aarch64/vars-template-pflash.raw' if libvirt_vm_arch == 'aarch64' else '/usr/share/edk2/ovmf/OVMF_VARS.fd' }}"
 
 # Format of the template OVMF efi variable store.
 libvirt_vm_ovmf_efi_variable_store_format: raw
 
 # Path to OVMF efi firmware
-libvirt_vm_ovmf_efi_firmware_path: /usr/share/edk2/ovmf/OVMF_CODE.cc.fd
+libvirt_vm_ovmf_efi_firmware_path: "{{ '/usr/share/edk2/aarch64/QEMU_EFI-pflash.raw' if libvirt_vm_arch == 'aarch64' else '/usr/share/edk2/ovmf/OVMF_CODE.cc.fd' }}"
