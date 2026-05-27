@@ -46,7 +46,8 @@ Role Variables
 - `libvirt_cpu_mode_default`: The default CPU mode if `libvirt_cpu_mode` or
   `vm.cpu_mode` is undefined.
 
-- `libvirt_vm_arch`: CPU architecture, default is `x86_64`.
+- `libvirt_vm_arch`: CPU architecture, default is `x86_64`. Set to
+  `aarch64` to create ARM virtual machines.
 
 - `libvirt_vm_uri`: Override the libvirt connection URI. See the
   [libvirt docs](https://libvirt.org/remote.html) docs for more details.
@@ -79,12 +80,14 @@ Role Variables
 
     - `vcpus`: the number of VCPU cores to assign to the VM.
 
-    - `machine`: Virtual machine type. Default is `None` if
-      `libvirt_vm_engine` is `kvm`, otherwise `pc-1.0`.
+    - `machine`: Virtual machine type. Default is `virt` when
+      `libvirt_vm_arch` is `aarch64`, `None` if `libvirt_vm_engine` is `kvm`,
+      otherwise `pc-1.0`.
 
     - `cpu_mode`: Virtual machine CPU mode. Default is `host-passthrough` if
-      `libvirt_vm_engine` is `kvm`, otherwise `host-model`. Can be set to none
-      to not configure a cpu mode.
+      `libvirt_vm_engine` is `kvm`, otherwise `maximum` for `aarch64` and
+      `host-model` for other architectures. Can be set to none to not configure
+      a cpu mode.
 
     - `clock_offset`: Overrides default set in `libvirt_vm_clock_offset`
 

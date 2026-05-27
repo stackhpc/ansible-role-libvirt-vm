@@ -21,7 +21,9 @@
     <boot dev='hd'/>
     <boot dev='cdrom'/>
     <boot dev='network'/>
-    <bios useserial='yes'/>
+    {% if libvirt_vm_arch == 'x86_64' %}
+      <bios useserial='yes'/>
+    {% endif %}
     {% if boot_firmware == "efi"  %}
       {# NOTE: pflash requires qemu 1.6 or newer. There are alternatives for older versions, but
                they do not work with secure boot. See OVMF readme for an overview #}
@@ -31,8 +33,10 @@
   </os>
   <features>
     <acpi/>
+{% if libvirt_vm_arch == 'x86_64' %}
     <apic/>
     <pae/>
+{% endif %}
   </features>
   {% if cpu_mode %}
   <cpu mode='{{ cpu_mode }}'>
