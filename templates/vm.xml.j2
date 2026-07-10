@@ -103,11 +103,11 @@
 {% endfor %}
 {% if console_log_enabled | bool %}
     <serial type='file'>
-      <source path='{{ console_log_path }}'/>
+      <source path='{{ console_log_path }}'{{ " append='on'" if console_log_append | bool }}/>
     </serial>
     <serial type='pty'/>
     <console type='file'>
-      <source path='{{ console_log_path }}'/>
+      <source path='{{ console_log_path }}'{{ " append='on'" if console_log_append | bool }}/>
       <target type='serial'/>
     </console>
 {% else %}

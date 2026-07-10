@@ -44,6 +44,7 @@
 - include_tasks: vm.yml
   vars:
     console_log_enabled: "{{ vm.console_log_enabled | default(false) }}"
+    console_log_append: "{{ vm.console_log_append | default(false) }}"
     console_log_path: >-
       {{ vm.console_log_path |
          default(libvirt_vm_default_console_log_dir + '/' +  vm.name + '-console.log', true) }}
