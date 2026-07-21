@@ -9,7 +9,7 @@
   register: result
   become: true
 
-- name: Destory the VM is existing
+- name: Destroy the VM if existing
   block:
     - name: Ensure the VM is absent
       community.libvirt.virt:
@@ -33,4 +33,10 @@
           {{ vm.name }}
       become: true
       changed_when: true
+
+    - name: Remove cloud-init directory
+      ansible.builtin.file:
+        path: "{{ libvirt_vm_cloud_init_dir }}/{{ vm.name }}"
+        state: absent
+      become: true
   when: vm.name in result.list_vms

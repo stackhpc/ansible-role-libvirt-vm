@@ -1,0 +1,32 @@
+version: 2
+{% if vm.cloud_init_network_config is defined %}
+{{ vm.cloud_init_network_config | to_nice_yaml(indent=2) }}
+{% else %}
+ethernets:
+{% for interface in interfaces %}
+{% if interface.alias is defined %}
+  {{ interface.alias }}:
+    match:
+      macaddress: "{{ interface.mac }}"
+    set-name: {{ interface.alias }}
+{% if interface.address is defined %}
+    addresses:
+      - {{ interface.address }}
+{% if interface.gateway is defined %}
+    routes:
+      - to: default
+        via: {{ interface.gateway }}
+{% endif %}
+{% if interface.nameservers is defined %}
+    nameservers:
+      addresses: {{ interface.nameservers }}
+{% endif %}
+{% else %}
+    dhcp4: true
+{% endif %}
+{% else %}
+  eth{{ loop.index0 }}:
+    dhcp4: true
+{% endif %}
+{% endfor %}
+{% endif %} 
