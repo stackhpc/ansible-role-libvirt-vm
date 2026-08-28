@@ -7,6 +7,7 @@
     unredirected_headers: "{{ item.unredirected_headers | default(omit) }}"
     user: "{{ item.username | default(omit) }}"
     password: "{{ item.password | default(omit) }}"
+    force_basic_auth: "{{ item.force_basic_auth | default(false) }}"
   with_items: "{{ volumes | selectattr('image', 'defined') | list }}"
   when: "'http' in item.image"
 
