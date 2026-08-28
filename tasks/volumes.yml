@@ -1,6 +1,6 @@
 ---
 - name: Ensure remote images are downloaded
-  ansible.builtin.get_url:
+  ansible.builtin.uri:
     url: "{{ item.image }}"
     dest: "{{ libvirt_vm_image_cache_path }}/{{ item.image | basename }}"
     checksum: "{{ item.checksum | default(omit) }}"
