@@ -4,6 +4,7 @@
     url: "{{ item.image }}"
     dest: "{{ libvirt_vm_image_cache_path }}/{{ item.image | basename }}"
     checksum: "{{ item.checksum | default(omit) }}"
+    unredirected_headers: "{{ item.unredirected_headers | default(omit) }}"
   with_items: "{{ volumes | selectattr('image', 'defined') | list }}"
   when: "'http' in item.image"
 
