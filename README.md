@@ -121,6 +121,10 @@ Role Variables
         - `image`: (optional) a URL to an image with which the volume is initalised (full copy).
         - `checksum`: (optional) checksum of the `image` to avoid download when it's not necessary.
         - `unredirect_headers`: (optional) list of header names that should not be sent in redirected requests.
+        - `username`: (optional) a username used to authenticate with remote image source.
+        - `password`: (optional) a password used to authenticate with remote image source.
+        - `force_basic_auth`: (optional) require basic authentication is attempted.
+        - `ignore_cache`: (optional) force an image to be downloaded regardless of if cache has expired or not.
         - `backing_image`: (optional) name of the backing volume which is assumed to already be the same pool (copy-on-write).
         - `image` and `backing_image` are mutually exclusive options.
         - `target`: (optional) Manually influence type and order of volumes
