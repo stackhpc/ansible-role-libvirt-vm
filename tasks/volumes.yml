@@ -9,6 +9,7 @@
     password: "{{ item.password | default(omit) }}"
     force_basic_auth: "{{ item.force_basic_auth | default(false) }}"
     force: "{{ item.ignore_cache | default(false) }}"
+    status_code: [200, 304]
   with_items: "{{ volumes | selectattr('image', 'defined') | list }}"
   when: "'http' in item.image"
 
