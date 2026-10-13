@@ -1,0 +1,7 @@
+{% if vm_uuid.rc == 0 %}
+instance-id: {{ vm_uuid.stdout }}
+{% else %}
+instance-id: {{ vm.name }}
+{% endif %}
+local-hostname: {{ vm.name }}
+{{ vm.cloud_init_meta_data | default({}) | to_nice_yaml(indent=2) }}

@@ -19,3 +19,15 @@
     - interface.type == 'direct'
     - interface.source is not defined or
       interface.source.dev is not defined
+
+- name: Validate network configuration requirements
+  ansible.builtin.fail:
+    msg: >
+      {% if vm.cloud_init_enabled | default(false) | bool and not (interface.alias is defined and interface.mac is defined) %}
+      When cloud-init is enabled, both 'alias' and 'mac' must be defined for all interfaces
+      {% elif not (vm.cloud_init_enabled | default(false) | bool) and (interface.address is defined or interface.gateway is defined or interface.nameservers is defined) %}
+      Cloud-init must be enabled when configuring network settings (address, gateway, or nameservers)
+      {% endif %}
+  when:
+    - vm.cloud_init_enabled | default(false) | bool and not (interface.alias is defined and interface.mac is defined) or
+      not (vm.cloud_init_enabled | default(false) | bool) and (interface.address is defined or interface.gateway is defined or interface.nameservers is defined)

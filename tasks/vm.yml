@@ -29,6 +29,10 @@
     uri: "{{ libvirt_vm_uri | default(omit, true) }}"
   become: "{{ libvirt_vm_sudo }}"
 
+- name: Include cloud-init tasks
+  ansible.builtin.include_tasks: cloud-init.yml
+  when: vm.cloud_init_enabled | default(false) | bool
+
 - name: Ensure the VM is running and started at boot
   community.libvirt.virt:
     name: "{{ vm.name }}"

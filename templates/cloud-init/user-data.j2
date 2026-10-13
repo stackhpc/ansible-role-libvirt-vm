@@ -1,0 +1,2 @@
+#cloud-config
+{{ vm.cloud_init_user_data | default({}) | to_nice_yaml(indent=2) }} 
