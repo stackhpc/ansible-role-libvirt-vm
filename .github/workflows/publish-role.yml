@@ -1,4 +1,8 @@
 ---
+# THIS WORKFLOW IS MANAGED BY STACKHPC RELEASE TRAIN
+# https://github.com/stackhpc/stackhpc-release-train
+# Do not make changes to it manually
+
 name: Publish Ansible Role
 'on':
   push:
